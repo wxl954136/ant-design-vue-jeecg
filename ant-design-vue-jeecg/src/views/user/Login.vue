@@ -5,7 +5,20 @@
         :activeKey="customActiveKey"
         :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }"
         @change="handleTabClick">
+        <!--
         <a-tab-pane key="tab1" tab="账号密码登陆">
+        -->
+        <a-tab-pane key="tab1"  tab="悠蓝软件登录" >
+          <a-form-item>
+            <a-input
+              size="large"
+              v-decorator="['gsdm',{initialValue:'10000', rules: validatorRules.gsdm.rules}]"
+              type="text"
+              placeholder="请输入企业代码">
+              <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            </a-input>
+          </a-form-item>
+
           <a-form-item>
             <a-input
               size="large"
@@ -48,6 +61,7 @@
 
 
         </a-tab-pane>
+        <!--
         <a-tab-pane key="tab2" tab="手机号登陆">
           <a-form-item>
             <a-input
@@ -81,17 +95,21 @@
             </a-col>
           </a-row>
         </a-tab-pane>
+        -->
       </a-tabs>
 
       <a-form-item>
+
         <a-checkbox v-decorator="['rememberMe', {initialValue: true, valuePropName: 'checked'}]" >自动登陆</a-checkbox>
-        <router-link :to="{ name: 'alteration'}" class="forge-password" style="float: right;">
-          忘记密码
-        </router-link>
-       <router-link :to="{ name: 'register'}" class="forge-password" style="float: right;margin-right: 10px" >
-          注册账户
-        </router-link>
-      </a-form-item>
+        <!--
+              <router-link :to="{ name: 'alteration'}" class="forge-password" style="float: right;">
+                忘记密码
+              </router-link>
+             <router-link :to="{ name: 'register'}" class="forge-password" style="float: right;margin-right: 10px" >
+                注册账户
+              </router-link>
+ -->
+            </a-form-item>
 
       <a-form-item style="margin-top:24px">
         <a-button
@@ -104,13 +122,14 @@
           :disabled="loginBtn">确定
         </a-button>
       </a-form-item>
-
+<!--
       <div class="user-login-other">
         <span>其他登陆方式</span>
         <a @click="onThirdLogin('github')" title="github"><a-icon class="item-icon" type="github"></a-icon></a>
         <a @click="onThirdLogin('wechat_enterprise')" title="企业微信"><a-icon class="item-icon" type="wechat"></a-icon></a>
         <a @click="onThirdLogin('dingtalk')" title="钉钉"><a-icon class="item-icon" type="dingding"></a-icon></a>
       </div>
+-->
     </a-form>
 
     <two-step-captcha
@@ -196,6 +215,7 @@
           smsSendBtn: false,
         },
         validatorRules:{
+          gsdm:{rules: [{ required: true, message: '请输入企业代码!'},{validator: this.handleGsdm}]},
           username:{rules: [{ required: true, message: '请输入用户名!'},{validator: this.handleUsernameOrEmail}]},
           password:{rules: [{ required: true, message: '请输入密码!',validator: 'click'}]},
           mobile:{rules: [{validator:this.validateMobile}]},
@@ -248,6 +268,15 @@
         }
         window.addEventListener("message", receiveMessage, false);
       },
+      handleGsdm (rule, value, callback) {
+        const regex = /^[0-9]{5}$/;
+        if (regex.test(value)) {
+          this.loginType = 0
+        } else {
+          this.loginType = 1
+        }
+        callback()
+      },
       // handler
       handleUsernameOrEmail (rule, value, callback) {
         const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
@@ -268,8 +297,9 @@
         that.loginBtn = true;
         // 使用账户密码登陆
         if (that.customActiveKey === 'tab1') {
-          that.form.validateFields([ 'username', 'password','inputCode', 'rememberMe' ], { force: true }, (err, values) => {
+          that.form.validateFields(['gsdm', 'username', 'password','inputCode', 'rememberMe' ], { force: true }, (err, values) => {
             if (!err) {
+              loginParams.gsdm = values.gsdm
               loginParams.username = values.username
               // update-begin- --- author:scott ------ date:20190805 ---- for:密码加密逻辑暂时注释掉，有点问题
               //loginParams.password = md5(values.password)
@@ -295,6 +325,7 @@
         } else {
           that.form.validateFields([ 'mobile', 'captcha', 'rememberMe' ], { force: true }, (err, values) => {
             if (!err) {
+              loginParams.gsdm = values.gsdm
               loginParams.mobile = values.mobile
               loginParams.captcha = values.captcha
               loginParams.remember_me = values.rememberMe

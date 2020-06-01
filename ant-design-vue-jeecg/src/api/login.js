@@ -35,7 +35,7 @@ export function getSmsCaptcha(parameter) {
     data: parameter
   })
 }
-
+/*
 export function getInfo() {
   return axios({
     url: '/api/user/info',
@@ -45,6 +45,8 @@ export function getInfo() {
     }
   })
 }
+
+ */
 
 export function logout(logoutToken) {
   return axios({

@@ -59,8 +59,8 @@
           password: {
             rules: [{
               required: true,
-              pattern: /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,.\/]).{8,}$/,
-              message: '密码由8位数字、大小写字母和特殊符号组成!!'
+              pattern: /^[_a-zA-Z0-9_]{6,}$/,
+              message: '密码由6位数字、大小写字母和特殊符号组成!!'
             }, {validator: this.handlePasswordLevel}]
           },
           confirmPassword: {rules: [{required: true, message: '密码不能为空!'}, {validator: this.handlePasswordCheck}]},

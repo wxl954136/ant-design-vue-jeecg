@@ -27,7 +27,7 @@
 
       <a-form-item
         fieldDecoratorId="password2"
-        :fieldDecoratorOptions="{rules: [{ required: true, message: '至少8位密码，区分大小写' }, { validator: this.handlePasswordCheck }], validateTrigger: ['change', 'blur'], validateFirst: true}">
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '至少6位密码，区分大小写' }, { validator: this.handlePasswordCheck }], validateTrigger: ['change', 'blur'], validateFirst: true}">
 
         <a-input size="large" type="password" autocomplete="false" placeholder="确认密码"></a-input>
       </a-form-item>
@@ -173,10 +173,11 @@
       handlePasswordLevel(rule, value, callback) {
 
         let level = 0
-        let reg = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/;
+        let reg = /^[_a-zA-Z0-9_]{6,}$/;
         if (!reg.test(value)) {
-          callback(new Error('密码由8位数字、大小写字母和特殊符号组成!'))
+          callback(new Error('密码由6位数字、大小写字母和特殊符号组成!'))
         }
+        /*
         // 判断这个字符串中有没有数字
         if (/[0-9]/.test(value)) {
           level++
@@ -189,6 +190,9 @@
         if (/[^0-9a-zA-Z_]/.test(value)) {
           level++
         }
+
+         */
+        /*
         this.state.passwordLevel = level
         this.state.percent = level * 30
         if (level >= 2) {
@@ -202,6 +206,8 @@
           }
           callback(new Error('密码强度不够'))
         }
+
+         */
       },
 
       handlePasswordCheck(rule, value, callback) {
