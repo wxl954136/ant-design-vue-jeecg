@@ -33,7 +33,8 @@
     allowClear
     :notFoundContent="loading ? undefined : null">
     <a-spin v-if="loading" slot="notFoundContent" size="small"/>
-    <a-select-option v-for="d in options" :key="d.value" :value="d.value">{{ d.text }}</a-select-option>
+
+    <a-select-option v-for="d in options"   :key="d.value" :value="d.value" >{{ d.text}} </a-select-option>
   </a-select>
 
 </template>

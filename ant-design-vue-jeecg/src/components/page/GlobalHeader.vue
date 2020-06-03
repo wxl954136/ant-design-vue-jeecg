@@ -17,8 +17,8 @@
         :type="collapsed ? 'menu-unfold' : 'menu-fold'"
         @click="toggle"/>
 
-      <span v-if="device === 'desktop'">欢迎进入【悠蓝科技】企业管理平台</span>
-      <span v-else>【悠蓝科技】</span>
+      <span v-if="device === 'desktop'">欢迎进入悠蓝科技企业管理平台</span>
+      <span v-else>悠蓝科技</span>
 
       <user-menu :theme="theme"/>
     </div>

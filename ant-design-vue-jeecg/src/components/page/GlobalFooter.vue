@@ -13,7 +13,7 @@
     <div class="copyright">
       Copyright
       <a-icon type="copyright"/>
-      2020 <span>【悠蓝科技】</span>
+      2020 <span>悠蓝科技</span>
     </div>
   </div>
 </template>
