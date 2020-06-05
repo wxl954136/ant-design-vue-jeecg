@@ -26,16 +26,25 @@
           <a-col :xs="24" :sm="12">
             <!-- 做一个字段隐藏思路,这样弱关联,popupCallback注意添加辅助字段traderName,怎么模糊查询 -->
             <a-form-item label="供应商" :labelCol="labelCol" :wrapperCol="wrapperCol">
+               <y-search-trader-select-tag v-decorator="['traderId', validatorRules.traderId]"    />
+               <!--
               <a-select v-decorator="['traderId', validatorRules.traderId]"
+                        show-search
+                        placeholder="选择供应商"
+                        option-filter-prop="children"
+                        :filter-option="filterOption"
                         allowClear>
-                <a-select-option v-for="data in traderDataList" :key="data.id"  :disabled="data.enableFlag?false:true">{{data.name}}
+                <a-select-option v-for="data in traderDataList" :key="data.id"
+                                 :disabled="data.enableFlag?false:true">{{data.name}}
                 </a-select-option>
               </a-select>
-              <!--
+              -->
+
+            <!--
                 <j-search-select-tag v-decorator="['traderId', validatorRules.traderId]"
                 :dict="traderInfo"   />
--->
-              <!--
+
+
               模糊查询怎么搞  youlan
               <a-input v-show="true" v-decorator="['traderId']" placeholder="这里是往来单位信息[隐藏]"></a-input>
               <j-popup
@@ -84,7 +93,7 @@
             :maxHeight="300"
             :rowNumber="true"
             :rowSelection="true"
-            :actionButton="true"/>
+            :actionButton="true" />
         </a-tab-pane>
         
       </a-tabs>
@@ -100,10 +109,17 @@
   import { httpAction } from '@/api/manage'
   import { JEditableTableMixin } from '@/mixins/JEditableTableMixin'
   import { validateDuplicateValue } from '@/utils/util'
-  import JDate from '@/components/jeecg/JDate'  
+  import JDate from '@/components/jeecg/JDate'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JSearchSelectTag from '@/components/dict/JSearchSelectTag'
+  import YSearchTraderSelectTag from '@/components/youlan/YSearchTraderSelectTag'
   import { USER_INFO } from "@/store/mutation-types"
+
+  //支持转换为拼音
+  import pinyin from '@/components/_util/pinyin.js'
+  const mapPinyinOfTrader = new Map()
+
+
   export default {
     name: 'BizPurchaseInModal',
     mixins: [JEditableTableMixin],
@@ -111,6 +127,8 @@
       JDate,
       JDictSelectTag,
       JSearchSelectTag,
+      YSearchTraderSelectTag,
+
     },
     data() {
       return {
@@ -230,30 +248,41 @@
     },
     mounted(){
          //这里做初始加载
-        this.getTraderList()
+         this.getTraderList()
     },
     methods: {
+
+      filterOption(input, option) {
+        let select_drop_text = option.componentOptions.children[0].text.toLowerCase().trim()
+        let select_drop_pinyin = ""
+        if (mapPinyinOfTrader.has(select_drop_text)){
+            select_drop_pinyin = mapPinyinOfTrader.get(select_drop_text)
+        }
+        let iz_cn = select_drop_text.indexOf(input.toLowerCase().trim()) >= 0
+        let iz_pinyin = select_drop_pinyin.indexOf(input.toLowerCase().trim()) >=0
+        return (  iz_cn || iz_pinyin);
+      },
+
       //直接action的访问东西， 同时自己定义a-select
       getTraderList(){
-        let formData = {};
+        let formData = {};//传条件，公司代码等一律从后台取
         let method = "get"
         let httpurl = this.url.traderList
         httpAction(httpurl, formData, method).then((res) => {
             if (res.success) {
               for(let i=0;i<res.result.length;i++){
                 let enable = (res.result[i].enableFlag=="1"?true:false)
-
+                mapPinyinOfTrader.set(res.result[i].name.toLowerCase().trim(),pinyin.ConvertPinyin(res.result[i].name.toLowerCase()))
                 this.traderDataList.push({
                   id: res.result[i].id,
                   name: res.result[i].name,
                   enableFlag: enable
                 })
               }
-
             }
         })
-
       },
+
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
         return Promise.all(values)
