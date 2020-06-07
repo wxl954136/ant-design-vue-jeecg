@@ -23,7 +23,7 @@
       <a-form :form="form">
 
         <a-form-item label="用户账号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input placeholder="请输入用户账号" v-decorator.trim="[ 'username', validatorRules.username]" :readOnly="!!model.id"/>
+          <a-input placeholder="请输入用户账号" v-decorator.trim="[ 'usersign', validatorRules.usersign]" :readOnly="!!model.id"/>
         </a-form-item>
 
         <template v-if="!model.id">
@@ -184,7 +184,7 @@
         userDepartModel:{userId:'',departIdList:[]}, // 保存SysUserDepart的用户部门中间表数据需要的对象
         dateFormat:"YYYY-MM-DD",
         validatorRules:{
-          username:{
+          usersign:{
             rules: [{
               required: true, message: '请输入用户账号!'
             },{
@@ -330,7 +330,7 @@
         that.visible = true;
         that.model = Object.assign({}, record);
         that.$nextTick(() => {
-          that.form.setFieldsValue(pick(this.model,'username','sex','realname','email','phone','activitiSync','workNo','telephone','post'))
+          that.form.setFieldsValue(pick(this.model,'usersign','sex','realname','email','phone','activitiSync','workNo','telephone','post'))
         });
         //身份为上级显示负责部门，否则不显示
         if(this.model.userIdentity=="2"){
@@ -481,6 +481,7 @@
               tableName: 'sys_user',
               fieldName: 'phone',
               fieldVal: value,
+              fieldGsdm:'gsdm',
               dataId: this.userId
             };
             duplicateCheck(params).then((res) => {
@@ -504,6 +505,7 @@
               tableName: 'sys_user',
               fieldName: 'email',
               fieldVal: value,
+              fieldGsdm:'gsdm',
               dataId: this.userId
             };
             duplicateCheck(params).then((res) => {
@@ -522,8 +524,9 @@
       validateUsername(rule, value, callback){
         var params = {
           tableName: 'sys_user',
-          fieldName: 'username',
+          fieldName: 'usersign',
           fieldVal: value,
+          fieldGsdm:'gsdm',
           dataId: this.userId
         };
         duplicateCheck(params).then((res) => {
@@ -539,6 +542,7 @@
           tableName: 'sys_user',
           fieldName: 'work_no',
           fieldVal: value,
+          fieldGsdm:'gsdm', //gsdm的值在后台取
           dataId: this.userId
         };
         duplicateCheck(params).then((res) => {

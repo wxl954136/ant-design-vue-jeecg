@@ -216,10 +216,11 @@
               return parseInt(index)+1;
             }
           },*/
+
           {
             title: '用户账号',
             align: "center",
-            dataIndex: 'username',
+            dataIndex: 'usersign',
             width: 120,
             sorter: true
           },
