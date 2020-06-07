@@ -537,6 +537,8 @@
         }
       })
       },
+
+
       validateWorkNo(rule, value, callback){
         var params = {
           tableName: 'sys_user',
