@@ -37,6 +37,8 @@ import config from '@/defaultSettings'
 
 import JDictSelectTag from './components/dict/index.js'
 import hasPermission from '@/utils/hasPermission'
+import enterToNext from '@/utils/enterToNext'
+import focusNextOnEnter from '@/utils/focusNextOnEnter'
 import vueBus from '@/utils/vueBus';
 import JeecgComponents from '@/components/jeecg/index'
 import '@/assets/less/JAreaLinkage.less'
@@ -48,6 +50,8 @@ Vue.use(Antd)
 Vue.use(VueAxios, router)
 Vue.use(Viser)
 Vue.use(hasPermission)
+Vue.use(enterToNext)
+Vue.use(focusNextOnEnter)
 Vue.use(JDictSelectTag)
 Vue.use(Print)
 Vue.use(preview)

@@ -15,7 +15,7 @@
 
           <a-col :xs="24" :sm="12">
             <a-form-item label="单据号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['bizNo', validatorRules.bizNo]" placeholder="请输入单据号码"></a-input>
+              <a-input    v-decorator="['bizNo', validatorRules.bizNo]" placeholder="请输入单据号码"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xs="24" :sm="12">
@@ -70,7 +70,7 @@
           </a-col>
           <a-col :xs="24" :sm="12">
             <a-form-item label="经手人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['handler']" placeholder="请输入经手人"></a-input>
+              <a-input  v-yenter-to-next = "true"  v-decorator="['handler']" placeholder="请输入经手人"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xs="24" :sm="12">
@@ -317,6 +317,19 @@
 
     }
   }
+
+/*
+  function enterCallback(e) {
+    if (e.keyCode === 13) {
+      let activeEl = document.activeElement;
+      let nextEl = activeEl.nextElementSibling;
+      nextEl && nextEl.focus();
+    }
+  }
+  window.addEventListener("keydown", enterCallback);
+
+ */
+
 </script>
 
 <style scoped>
