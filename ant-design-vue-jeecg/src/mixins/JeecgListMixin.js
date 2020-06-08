@@ -6,7 +6,7 @@
 import { filterObj } from '@/utils/util';
 import { deleteAction, getAction,downFile,getFileAccessHttpUrl } from '@/api/manage'
 import Vue from 'vue'
-import { ACCESS_TOKEN } from "@/store/mutation-types"
+import { ACCESS_TOKEN,USER_INFO } from "@/store/mutation-types"
 
 export const JeecgListMixin = {
   data(){
@@ -105,6 +105,21 @@ export const JeecgListMixin = {
         sqp['superQueryParams']=encodeURI(this.superQueryParams)
         sqp['superQueryMatchType'] = this.superQueryMatchType
       }
+
+      //悠蓝:目的是为了像银行，仓库中等模块，如果没有公gsdm，默认加上gsdm
+      if (!this.queryParam.gsdm || this.queryParam.gsdm === 'undefined')
+      {
+        console.log("悠蓝:1001:加公共gsdm条件")
+        this.queryParam.gsdm = Vue.ls.get(USER_INFO).gsdm
+      }
+
+      if (!this.queryParam.delFlag || this.queryParam.delFlag === 'undefined')
+      {
+        console.log("悠蓝:1002:加公共delFlag条件")
+        this.queryParam.delFlag =  "0"
+      }
+
+
       var param = Object.assign(sqp, this.queryParam, this.isorter ,this.filters);
       param.field = this.getQueryField();
       param.pageNo = this.ipagination.current;

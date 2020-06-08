@@ -72,7 +72,9 @@
   import DictItemList from './DictItemList'
   import DictDeleteList from './DictDeleteList'
   import { getAction } from '@/api/manage'
-  import { UI_CACHE_DB_DICT_DATA } from "@/store/mutation-types"
+  import { USER_INFO,UI_CACHE_DB_DICT_DATA } from "@/store/mutation-types"
+
+
   import Vue from 'vue'
 
   export default {
@@ -87,6 +89,7 @@
         queryParam: {
           dictCode: "",
           dictName: "",
+          gsdm:Vue.ls.get(USER_INFO).gsdm,
         },
         // 表头
         columns: [
@@ -141,6 +144,7 @@
         },
       }
     },
+
     computed: {
       importExcelUrl: function () {
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;

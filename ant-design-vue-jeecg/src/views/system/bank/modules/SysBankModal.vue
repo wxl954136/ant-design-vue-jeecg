@@ -43,6 +43,7 @@
   import { httpAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
+  import {duplicateCheck } from '@/api/api'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
 
 
@@ -57,6 +58,7 @@
         title:"操作",
         width:800,
         visible: false,
+        bankId:'',
         model: {},
         labelCol: {
           xs: { span: 24 },
@@ -71,6 +73,7 @@
           bankName: {
             rules: [
               { required: true, message: '请输入银行名称!'},
+              { validator: this.validateBankName }
             ]
           },
           bankAddress: {
@@ -117,11 +120,13 @@
         this.edit({});
       },
       edit (record) {
-        this.form.resetFields();
-        this.model = Object.assign({}, record);
-        this.visible = true;
-        this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'bankName','bankAddress','bankCardNo','bankBelong','memo','bankSort','enableFlag'))
+        let that = this;
+        that.bankId = record.id;
+        that.form.resetFields();
+        that.model = Object.assign({}, record);
+        that.visible = true;
+        that.$nextTick(() => {
+          that.form.setFieldsValue(pick(this.model,'bankName','bankAddress','bankCardNo','bankBelong','memo','bankSort','enableFlag'))
         })
       },
       close () {
@@ -166,6 +171,22 @@
       popupCallback(row){
         this.form.setFieldsValue(pick(row,'bankName','bankAddress','bankCardNo','bankBelong','memo','bankSort','enableFlag'))
       },
+      validateBankName(rule, value, callback){
+        var params = {
+          tableName: 'sys_bank',
+          fieldName: 'bank_name',
+          fieldVal: value,
+          fieldGsdm:'gsdm',
+          dataId: this.bankId
+        };
+        duplicateCheck(params).then((res) => {
+          if (res.success) {
+            callback()
+          } else {
+            callback("该银行名称已经存在!")
+          }
+        })
+      }
 
       
     }

@@ -76,6 +76,7 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x: 1000}"
         bordered
         rowKey="id"
         :columns="columns"
@@ -155,6 +156,7 @@
             dataIndex: '',
             key:'rowIndex',
             width:60,
+            fixed:"left",
             align:"center",
             customRender:function (t,r,index) {
               return parseInt(index)+1;
@@ -162,46 +164,62 @@
           },
           {
             title:'银行名称',
-            align:"center",
+            align:"left",
+            width:120,
+            fixed:"left",
             dataIndex: 'bankName',
             sorter: true
           },
           {
             title:'开户行',
-            align:"center",
+            align:"left",
+            width:150,
             dataIndex: 'bankAddress'
           },
           {
             title:'银行卡号',
-            align:"center",
+            align:"left",
+            width:150,
             dataIndex: 'bankCardNo',
             sorter: true
           },
           {
             title:'银行归属人',
             align:"center",
+            width:90,
             dataIndex: 'bankBelong'
           },
           {
             title:'备注',
-            align:"center",
+            align:"left",
+            width:200,
             dataIndex: 'memo'
           },
           {
             title:'排序',
             align:"center",
+            width:60,
+            sorter: true,
             dataIndex: 'bankSort'
           },
           {
-            title:'启用状态',
+            title:'状态',
             align:"center",
-            dataIndex: 'enableFlag_dictText'
+            width:80,
+            dataIndex: 'enableFlag_dictText',
+            customRender: function (text) {
+              if (text == '启用') {
+                return <a-tag color='#108ee9'>{text}</a-tag>
+              } else {
+                return  <a-tag color='#f50'>{text}</a-tag>
+              }
+            }
           },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            // fixed:"right",
+            fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' }
           }

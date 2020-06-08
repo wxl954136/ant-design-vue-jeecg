@@ -81,6 +81,7 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x: 1300}"
         bordered
         rowKey="id"
         :columns="columns"
@@ -170,65 +171,107 @@
           },
           {
             title:'商品编码',
-            align:"center",
+            align:"left",
+            width:120,
+            sorter: true,
             dataIndex: 'code'
           },
           {
             title:'品牌',
-            align:"center",
+            align:"left",
+            width:90,
+            sorter: true,
             dataIndex: 'brand'
           },
           {
             title:'商品名称',
-            align:"center",
-            dataIndex: 'name'
+            width:150,
+            align:"left",
+            dataIndex: 'name',
+            sorter: true,
           },
           {
             title:'颜色',
-            align:"center",
+            align:"left",
+            width:90,
+            sorter: true,
             dataIndex: 'color'
           },
           {
             title:'商品全称',
             align:"center",
-            dataIndex: 'fullName'
+            width:200,
+            dataIndex: 'fullName',
+            sorter: true,
           },
           {
             title:'商品分类',
-            align:"center",
+            align:"left",
+            width:100,
             dataIndex: 'classifyId',
+            sorter: true,
             customRender: (text) => (text ? filterMultiDictText(this.dictOptions['classifyId'], text) : '')
           },
           {
             title:'库龄 ',
             align:"center",
-            dataIndex: 'stockAge'
+            width:60,
+            dataIndex: 'stockAge',
+
+
           },
           {
             title:'成本方式',
             align:"center",
-            dataIndex: 'costFlag_dictText'
+            width:90,
+            dataIndex: 'costFlag_dictText',
+            customRender: function (text) {
+              if (text == '个体计价') {
+                return <a-tag color="green">{text}</a-tag>
+              } else {
+                return  <a-tag color='#f50'>{text}</a-tag>
+              }
+            }
           },
           {
             title:'虚拟商品',
             align:"center",
-            dataIndex: 'virFlag_dictText'
+            width:90,
+            dataIndex: 'virFlag_dictText',
+            customRender: function (text) {
+              if (text == '是') {
+                return <a-tag color="#f50">{text}</a-tag>
+              } else {
+                return  <a-tag color='green'>{text}</a-tag>
+              }
+            }
           },
-          {
-            title:'启用状态',
-            align:"center",
-            dataIndex: 'enableFlag_dictText'
-          },
+
           {
             title:'排序',
             align:"center",
+            width:60,
+            sorter: true,
             dataIndex: 'skuSort'
+          },
+          {
+            title:'状态',
+            align:"center",
+            width:90,
+            dataIndex: 'enableFlag_dictText',
+            customRender: function (text) {
+              if (text == '启用') {
+                return <a-tag color='#108ee9'>{text}</a-tag>
+              } else {
+                return  <a-tag color='#f50'>{text}</a-tag>
+              }
+            }
           },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            // fixed:"right",
+            fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' }
           }

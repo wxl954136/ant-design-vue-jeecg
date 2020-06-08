@@ -162,7 +162,7 @@
 </template>
 
 <script>
-  import Vue from 'vue'
+
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import BizPurchaseInModal from './modules/BizPurchaseInModal'
   import BizPurchaseInDetailSubTable from './subTables/BizPurchaseInDetailSubTable'
@@ -171,7 +171,6 @@
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
 
-  import { USER_INFO,ACCESS_TOKEN,USER_NAME } from "@/store/mutation-types"
   export default {
     name: 'BizPurchaseInList',
     mixins: [JeecgListMixin],
@@ -251,18 +250,15 @@
     computed: {
 
       importExcelUrl() {
-        /**
+
+/*
          * 取值请注意：
          * 1.import Vue from 'vue'
          * 2.import { USER_INFO,ACCESS_TOKEN,USER_NAME } from "@/store/mutation-types"
          *  let userInfo = Vue.ls.get(USER_INFO)
          * console.info(userInfo.gsdm)
-         */
+ */
 
-
-        // console.info("1======================")
-        // console.info("2======================" + Vue.ls.get(USER_NAME))
-        //
 
         return window._CONFIG['domianURL'] + this.url.importExcelUrl
       }

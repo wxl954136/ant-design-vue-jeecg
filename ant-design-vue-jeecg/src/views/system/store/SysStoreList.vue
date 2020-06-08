@@ -6,7 +6,10 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="仓库名称">
-              <a-input placeholder="请输入仓库名称" v-model="queryParam.name"></a-input>
+<!--
+              <a-input  v-show="1==1"  placeholder="公司代码【隐藏】" v-model="queryParam.gsdm" > </a-input>
+-->
+              <a-input placeholder="请输入仓库名称" v-model="queryParam.name" ></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -93,7 +96,6 @@
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
-
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
@@ -118,7 +120,7 @@
 
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'  //queryParam定义在此方法中
   import SysStoreModal from './modules/SysStoreModal'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
@@ -135,6 +137,8 @@
     data () {
       return {
         description: '仓库信息管理页面',
+
+
         // 表头
         columns: [
           {
@@ -150,11 +154,13 @@
           {
             title:'仓库名称',
             align:"center",
+            width:120,
             dataIndex: 'name'
           },
           {
             title:'归属部门',
             align:"center",
+            width:100,
             dataIndex: 'storeOfOrg_dictText'
           },
           {
@@ -163,15 +169,24 @@
             dataIndex: 'memo'
           },
           {
-            title:'启用状态',
+            title:'状态',
             align:"center",
-            dataIndex: 'enableFlag_dictText'
+            width:80,
+            dataIndex: 'enableFlag_dictText',
+            customRender: function (text) {
+              if (text == '启用') {
+                return <a-tag color='#108ee9'>{text}</a-tag>
+              } else {
+                return  <a-tag color='#f50'>{text}</a-tag>
+              }
+            }
+
           },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            // fixed:"right",
+            fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' }
           }
@@ -186,6 +201,7 @@
         dictOptions:{},
       }
     },
+
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
@@ -193,7 +209,8 @@
     },
     methods: {
       initDictConfig(){
-      }
+      },
+
     }
   }
 </script>

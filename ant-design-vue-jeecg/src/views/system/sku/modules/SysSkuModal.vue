@@ -25,12 +25,16 @@
         <a-row style="width: 100%;">
           <a-col :span="24/2">
             <a-form-item label="商品名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入商品名称"></a-input>
+              <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入商品名称"
+                       @change="onChangeForFullName($event,'name')"
+              ></a-input>
             </a-form-item>
           </a-col>
           <a-col :span="24/2">
             <a-form-item label="颜色" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['color', validatorRules.color]" placeholder="请输入颜色"></a-input>
+              <a-input v-decorator="['color', validatorRules.color]" placeholder="请输入颜色"
+                       @change="onChangeForFullName($event,'color')"
+              ></a-input>
             </a-form-item>
           </a-col>
         </a-row>
@@ -188,6 +192,22 @@
     methods: {
       add () {
         this.edit({});
+      },
+      onChangeForFullName(event,object){
+
+        let color = this.form.getFieldValue("color")
+        let name = this.form.getFieldValue("name")
+        if (object == "name"){
+          name = event.target.value;
+        }else  if (object == "color"){
+          color = event.target.value;
+        }
+
+        let fullName = name.toString().trim() + " " + color.toString().trim();
+        this.form.setFieldsValue({
+          'fullName': fullName,
+          //这里可以继续设置N个值form表单值
+        });
       },
       edit (record) {
         this.form.resetFields();
