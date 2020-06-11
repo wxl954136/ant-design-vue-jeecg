@@ -172,9 +172,29 @@
           select_drop_pinyin = pinyin.ConvertPinyin(select_drop_text)
           mapPinyinOfTrader.set(select_drop_text,pinyin.ConvertPinyin(select_drop_text))
         }
-        let iz_cn = select_drop_text.indexOf(input.toLowerCase().trim()) >= 0
-        let iz_pinyin = select_drop_pinyin.indexOf(input.toLowerCase().trim()) >=0
+
+        let array  =  input.toLowerCase().trim().split(" ")
+        let iz_pinyin = false
+        for (let item of array) {
+          if (item.length >0 && item != "" )
+          {
+            iz_pinyin = (select_drop_pinyin.indexOf(item) >=0)
+            if (!iz_pinyin) break
+          }
+        }
+        let iz_cn = false
+        if (!iz_pinyin){
+          for (let item of array) {
+            if (item.length >0 && item != "" )
+            {
+              iz_cn = (select_drop_text.indexOf(item) >=0)
+              if (!iz_cn) break
+            }
+          }
+        }
+       // let iz_cn = select_drop_text.indexOf(input.toLowerCase().trim()) >= 0
         return (  iz_cn || iz_pinyin);
+        //源码就下面句话
         //return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       },
       handleChange (selectedValue) {

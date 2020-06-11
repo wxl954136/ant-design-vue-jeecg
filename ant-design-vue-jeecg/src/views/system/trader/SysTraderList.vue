@@ -90,8 +90,7 @@
 
       <a-table
         ref="table"
-        :scroll="{x: 1500}"
-
+        :scroll="{x: 1650}"
         size="middle"
         bordered
         rowKey="id"
@@ -172,29 +171,49 @@
             dataIndex: '',
             key:'rowIndex',
             width:60,
+            fixed:"left",
             align:"center",
             customRender:function (t,r,index) {
               return parseInt(index)+1;
             }
           },
+
           {
             title:'名称',
-            align:"center",
+            align:"left",
             dataIndex: 'name',
-            width:150
-
+            width:200,
+            ellipsis: true,
+            // fixed:"left",
           },
           {
             title:'供应商',
             align:"center",
             dataIndex: 'salerFlag_dictText',
-            width:60
+            width:60,
+            customRender: function (text) {
+              if (text == '是') {
+                return "✔"
+              } else {
+                return  ""
+              }
+            }
           },
+
           {
             title:'客户',
             align:"center",
             width:60,
-            dataIndex: 'buyerFlag_dictText'
+            ellipsis: true,
+
+            dataIndex: 'buyerFlag_dictText',
+            customRender: function (text) {
+              if (text == '是') {
+                return "✔"
+              } else {
+                return  ""
+              }
+            }
           },
           {
             title:'帐期(天)',
@@ -203,8 +222,8 @@
             dataIndex: 'period'
           },
           {
-            title:'信用额度(元)',
-            align:"center",
+            title:'信用额(元)',
+            align:"right",
             width:90,
             dataIndex: 'creditAmout'
           },
@@ -216,32 +235,32 @@
           },
           {
             title:'电话',
-            align:"center",
+            align:"left",
             width:100,
             dataIndex: 'tel'
           },
           {
             title:'地址',
-            align:"center",
+            align:"left",
             width:150,
             dataIndex: 'address'
           },
           {
             title:'银行名称',
-            align:"center",
+            align:"left",
             width:150,
             dataIndex: 'bankName'
           },
           {
             title:'开户行',
-            align:"center",
+            align:"left",
             width:150,
             dataIndex: 'bankAddress'
           },
           {
             title:'银行卡号',
             align:"center",
-            width:150,
+            width:180,
             dataIndex: 'bankCardNo'
           },
           {
@@ -251,11 +270,24 @@
             dataIndex: 'bankBelong'
           },
           {
+            title:'备注',
+            align:"left",
+            dataIndex: 'memo'
+          },
+          {
             title:'启用',
             align:"center",
             width:90,
-            dataIndex: 'enableFlag_dictText'
+            dataIndex: 'enableFlag_dictText',
+            customRender: function (text) {
+              if (text == '启用') {
+                return <a-tag color='#108ee9'>{text}</a-tag>
+              } else {
+                return  <a-tag color='#f50'>{text}</a-tag>
+              }
+            }
           },
+
           {
             title: '操作',
             dataIndex: 'action',

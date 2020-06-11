@@ -7,12 +7,16 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单据号码">
-          <a-input v-model="queryParam.bizNo" placeholder="请输入单据号码"/>
-        </a-form-item>
+              <a-input v-model="queryParam.bizNo" placeholder="请输入单据号码" default-value=""/>
+            </a-form-item>
       </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单据日期">
-              <j-date v-model="queryParam.bizDate" placeholder="请选择单据日期"/>
+              <!-- v-model="queryParam.bizDate" -->
+              <j-date v-model="queryParam.bizDate"
+                      placeholder="请选择单据日期"
+                      date-format="YYYY-MM-DD"
+              />
         </a-form-item>
       </a-col>
           <template v-if="toggleSearchStatus">
@@ -85,6 +89,7 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x: 1200}"
         bordered
         rowKey="id"
         class="j-table-force-nowrap"
@@ -101,7 +106,7 @@
         <!-- 内嵌table区域 begin -->
         <template slot="expandedRowRender" slot-scope="record">
           <a-tabs tabPosition="top">
-            <a-tab-pane tab="采购入库明细表" key="bizPurchaseInDetail" forceRender>
+            <a-tab-pane :tab="detailTitle" key="bizPurchaseInDetail" forceRender>
               <biz-purchase-in-detail-sub-table :record="record"/>
             </a-tab-pane>
           </a-tabs>
@@ -163,12 +168,11 @@
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import BizPurchaseInModal from './modules/BizPurchaseInModal'
   import BizPurchaseInDetailSubTable from './subTables/BizPurchaseInDetailSubTable'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
   import JDate from '@/components/jeecg/JDate.vue'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
 
   export default {
@@ -182,7 +186,15 @@
     },
     data() {
       return {
+
+        validatorRules: {
+          bizDate: {
+
+            initialValue: new Date()
+          },
+        },
         description: '采购信息主表列表管理页面',
+        detailTitle:"",
         // 表头
         columns: [
           {
@@ -195,42 +207,61 @@
           {
             title: '单据号码',
             align: 'center',
+            sorter: true,
+            width:150,
+            ellipsis: true,
             dataIndex: 'bizNo',
           },
           {
             title: '单据日期',
             align: 'center',
+            sorter: true,
+            width:100,
             dataIndex: 'bizDate',
           },
           {
             title: '往来单位',
-            align: 'center',
+            align: 'left',
+            sorter: true,
+            ellipsis: true,
+            width:200,
             dataIndex: 'traderId_dictText'
           },
           {
             title: '仓库',
-            align: 'center',
+            align: 'left',
+            sorter: true,
+            width:120,
+            ellipsis: true,
             dataIndex: 'storeId_dictText'
           },
           {
             title: '付款方式',
             align: 'center',
+            sorter: true,
+            ellipsis: true,
+            width:90,
             dataIndex: 'tradeMethod_dictText'
           },
           {
             title: '经手人',
             align: 'center',
+            ellipsis: true,
+            width:90,
             dataIndex: 'handler',
           },
           {
             title: '备注',
             align: 'center',
+            ellipsis: true,
             dataIndex: 'memo',
           },
           {
             title: '操作',
             dataIndex: 'action',
+            width:147,
             align: 'center',
+
             scopedSlots: { customRender: 'action' },
           },
         ],
@@ -239,7 +270,7 @@
         // 展开的行
         expandedRowKeys: [],
         url: {
-          list: '/biz.po/bizPurchaseIn/list',
+          list: this.getListUrl("/biz.po/bizPurchaseIn/list/") , //"/biz.po/bizPurchaseIn/list/"
           delete: '/biz.po/bizPurchaseIn/delete',
           deleteBatch: '/biz.po/bizPurchaseIn/deleteBatch',
           exportXlsUrl: '/biz.po/bizPurchaseIn/exportXls',
@@ -263,7 +294,26 @@
         return window._CONFIG['domianURL'] + this.url.importExcelUrl
       }
     },
+
+    created(){
+
+      let title = this.getBizType()
+      if (title == "CGRK") this.detailTitle = "采购入库明细"
+      else if (title == "CGTH") this.detailTitle = "采购退货明细"
+
+     },
     methods: {
+      getBizType(){
+        let routePath = this.$route.path
+        let bizType = (routePath.toString().indexOf("CGRK") >=0?"CGRK":"CGTH")
+        return bizType
+      },
+      getListUrl(url){
+        let baseRoute= url
+        let routePath = this.$route.path
+        let bizType = (routePath.toString().indexOf("CGRK") >=0?"CGRK":"CGTH")
+        return baseRoute +bizType
+      },
       initDictConfig() {
       },
 

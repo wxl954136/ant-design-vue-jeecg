@@ -166,7 +166,7 @@
         <!--  JDate -->
         <a-row :gutter="24">
           <a-col :span="12">
-            <a-form-item label="日期选择框">
+            <a-form-item label="日期选择框1">
               <j-date v-model="jdate.value" :showTime="true" dateFormat="YYYY-MM-DD HH:mm:ss"/>
             </a-form-item>
           </a-col>

@@ -57,34 +57,37 @@
         loading: false,
         dataSource: [],
         columns: [
-          {
-            title: '业务类型',
-            align: 'center',
-            dataIndex: 'bizType',
-          },
+
           {
             title: '商品名称',
-            align: 'center',
+            align: 'left',
+            ellipsis: true,
+            width:300,
             dataIndex: 'skuId_dictText'
           },
           {
             title: '数量',
-            align: 'center',
+            align: 'right',
+            width:90,
             dataIndex: 'qty',
           },
           {
             title: '单价',
-            align: 'center',
+            align: 'right',
+            width:90,
             dataIndex: 'price',
           },
           {
             title: '税率',
-            align: 'center',
+            align: 'right',
+            width:90,
             dataIndex: 'rate',
           },
           {
             title: '备注',
-            align: 'center',
+            align: 'left',
+            width:300,
+            ellipsis: true,
             dataIndex: 'memo',
           },
         ],
@@ -109,7 +112,7 @@
         this.loading = true
         this.dataSource = []
         getAction(this.url.listByMainId, {
-          id: record.id
+          id: record.id,
         }).then((res) => {
           if (res.success) {
             this.dataSource = res.result.records

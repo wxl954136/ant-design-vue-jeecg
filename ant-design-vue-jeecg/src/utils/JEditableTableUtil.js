@@ -12,6 +12,7 @@ const FormTypes = {
   popup:'popup',
   list_multi:"list_multi",
   sel_search:"sel_search",
+  sel_sku_search:"sel_sku_search",
   radio:'radio',
   checkbox_meta:"checkbox_meta",
   input_pop:'input_pop',

@@ -10,6 +10,7 @@ export const JEditableTableMixin = {
     return {
       title: '操作',
       visible: false,
+      optionType:true,    //true:新增 false:修改
       form: this.$form.createForm(this),
       confirmLoading: false,
       model: {},
@@ -48,6 +49,7 @@ export const JEditableTableMixin = {
 
     /** 当点击新增按钮时调用此方法 */
     add() {
+      //默认走的是这个
       if (typeof this.addBefore === 'function') this.addBefore()
       // 默认新增空数据
       let rowNum = this.addDefaultRowNum
@@ -55,11 +57,17 @@ export const JEditableTableMixin = {
         rowNum = 1
         console.warn('由于你没有在 data 中定义 addDefaultRowNum 或 addDefaultRowNum 不是数字，所以默认添加一条空数据，如果不想默认添加空数据，请将定义 addDefaultRowNum 为 0')
       }
+
       this.eachAllTable((item) => {
         item.add(rowNum)
       })
+
       if (typeof this.addAfter === 'function') this.addAfter(this.model)
+
       this.edit({})
+      this.optionType = true
+
+
     },
     /** 当点击了编辑（修改）按钮时调用此方法 */
     edit(record) {
@@ -67,8 +75,10 @@ export const JEditableTableMixin = {
       this.visible = true
       this.activeKey = this.refKeys[0]
       this.form.resetFields()
+      this.optionType = false
       this.model = Object.assign({}, record)
       if (typeof this.editAfter === 'function') this.editAfter(this.model)
+
     },
     /** 关闭弹窗，并将所有JEditableTable实例回归到初始状态 */
     close() {

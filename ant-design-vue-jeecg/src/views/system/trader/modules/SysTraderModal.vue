@@ -10,46 +10,108 @@
     cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
+        <a-row style="width: 100%;">
+          <a-col :span="24/2">
+            <a-form-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入名称"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24/2">
 
-        <a-form-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入名称"></a-input>
-        </a-form-item>
-        <a-form-item label="供应商" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['salerFlag', validatorRules.salerFlag]" :trigger-change="true" dictCode="sys_confirm_status" placeholder="请选择供应商"/>
-        </a-form-item>
-        <a-form-item label="客户" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['buyerFlag', validatorRules.buyerFlag]" :trigger-change="true" dictCode="sys_confirm_status" placeholder="请选择客户"/>
-        </a-form-item>
-        <a-form-item label="帐期(天)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="['period']" placeholder="请输入帐期(天)" style="width: 100%"/>
-        </a-form-item>
-        <a-form-item label="信用额度(元)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="['creditAmout']" placeholder="请输入信用额度(元)" style="width: 100%"/>
-        </a-form-item>
-        <a-form-item label="联系人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['contacter']" placeholder="请输入联系人"></a-input>
-        </a-form-item>
-        <a-form-item label="电话" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['tel']" placeholder="请输入电话"></a-input>
-        </a-form-item>
-        <a-form-item label="地址" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['address']" placeholder="请输入地址"></a-input>
-        </a-form-item>
-        <a-form-item label="银行名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['bankName']" placeholder="请输入银行名称"></a-input>
-        </a-form-item>
-        <a-form-item label="开户行" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['bankAddress']" placeholder="请输入开户行"></a-input>
-        </a-form-item>
-        <a-form-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['bankCardNo']" placeholder="请输入银行卡号"></a-input>
-        </a-form-item>
-        <a-form-item label="银行归属" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['bankBelong']" placeholder="请输入银行归属"></a-input>
-        </a-form-item>
-        <a-form-item label="启用" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['enableFlag', validatorRules.enableFlag]" :trigger-change="true" dictCode="sys_enable_status" placeholder="请选择启用"/>
-        </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row style="width: 100%;">
+          <a-col :span="24/2">
+            <a-form-item label="供应商" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-dict-select-tag type="list" v-decorator="['salerFlag', validatorRules.salerFlag]" :trigger-change="true" dictCode="sys_confirm_status" placeholder="请选择供应商"/>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24/2">
+            <a-form-item label="客户" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-dict-select-tag type="list" v-decorator="['buyerFlag', validatorRules.buyerFlag]" :trigger-change="true" dictCode="sys_confirm_status" placeholder="请选择客户"/>
+            </a-form-item>
+          </a-col>
+
+        </a-row>
+
+        <a-row style="width: 100%;">
+          <a-col :span="24/2">
+            <a-form-item label="帐期(天)" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input-number v-decorator="['period']" placeholder="请输入帐期(天)" style="width: 100%"/>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24/2">
+            <a-form-item label="信用额(元)" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input-number v-decorator="['creditAmout']" placeholder="请输入信用额度(元)" style="width: 100%"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-row style="width: 100%;">
+          <a-col :span="24/2">
+            <a-form-item label="联系人" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['contacter']" placeholder="请输入联系人"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24/2">
+            <a-form-item label="电话" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['tel']" placeholder="请输入电话"></a-input>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-row style="width: 100%;">
+          <a-col :span="24/2">
+            <a-form-item label="地址" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['address']" placeholder="请输入地址"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24/2">
+
+          </a-col>
+        </a-row>
+
+        <a-row style="width: 100%;">
+          <a-col :span="24/2">
+            <a-form-item label="银行名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['bankName']" placeholder="请输入银行名称"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24/2">
+            <a-form-item label="开户行" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['bankAddress']" placeholder="请输入开户行"></a-input>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-row style="width: 100%;">
+          <a-col :span="24/2">
+            <a-form-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['bankCardNo']" placeholder="请输入银行卡号"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24/2">
+            <a-form-item label="银行归属" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['bankBelong']" placeholder="请输入银行归属"></a-input>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row style="width: 100%;">
+          <a-col :span="24/2">
+            <a-form-item label="启用" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-dict-select-tag type="list" v-decorator="['enableFlag', validatorRules.enableFlag]" :trigger-change="true" dictCode="sys_enable_status" placeholder="请选择启用"/>
+            </a-form-item>
+          </a-col>
+
+          <a-col :span="24/2">
+
+          </a-col>
+        </a-row>
+
+
+
+
+
 
       </a-form>
     </a-spin>

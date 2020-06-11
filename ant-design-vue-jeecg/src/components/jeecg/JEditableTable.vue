@@ -624,21 +624,30 @@
                         <span
                           @mouseover="()=>{handleMouseoverCommono(row,col)}"
                           @mouseout="()=>{handleMouseoutCommono(row,col)}">
-
+                          <!--defaultActiveFirstOption-->
                           <a-select
                             :id="id"
                             :key="i"
+                            :async="true"
                             showSearch
                             optionFilterProp="children"
                             :filterOption="filterOption"
                             v-bind="buildProps(row,col)"
                             style="width: 100%;"
                             :value="searchSelectValues[id]"
-                            :options="col.options"
                             :getPopupContainer="getParentContainer"
                             :placeholder="replaceProps(col, col.placeholder)"
                             @change="(v)=>handleSearchSelectChange(v,id,row,col)"
-                            allowClear>
+                            allowClear
+                          >
+                            <!--
+                            :options="col.options"
+                            -->
+                            <!-- 悠蓝改造，支持disable-->
+                           <template v-for="(opt,optKey) in col.options">
+                              <a-select-option :value="opt.value" :key="optKey" :disabled="(opt.enable=='0')?true:false">{{ opt.title }}</a-select-option>
+                           </template>
+
                           </a-select>
                         </span>
                       </a-tooltip>
@@ -742,6 +751,10 @@
   import { getFileAccessHttpUrl } from '@/api/manage';
   import JInputPop from '@/components/jeecg/minipop/JInputPop'
   import JFilePop from '@/components/jeecg/minipop/JFilePop'
+
+  //支持转换为拼音
+  import pinyin from '@/components/_util/pinyin.js'
+  const mapPinyinOfTrader = new Map()
 
   // 行高，需要在实例加载完成前用到
   let rowHeight = 61
@@ -1000,6 +1013,7 @@
                   })
                 }
                 if (column.dictCode) {
+                  console.log("这里是加载值 悠蓝:youlan  -----------------" )
                   this._loadDictConcatToOptions(column)
                 }
               }
@@ -1032,6 +1046,7 @@
         vm.recalcTrHiddenItem(event.target.scrollTop)
 
       }
+
 
     },
     methods: {
@@ -1357,7 +1372,9 @@
       },
       /** 添加一行 */
       add(num = 1, forceScrollToBottom = false) {
+
         if (num < 1) return
+
         // let timestamp = new Date().getTime()
         let rows = this.rows
         let row
@@ -1365,6 +1382,7 @@
           rows = this.push({}, false, rows)
           row = rows[rows.length - 1]
         }
+
         this.rows = rows
 
         this.$nextTick(() => {
@@ -2191,6 +2209,7 @@
 
       /** 鼠标移入 */
       handleMouseoverCommono(row, column) {
+
         let inputId = column.key + row.id
         if (this.notPassedIds.indexOf(inputId) !== -1) {
           this.showOrHideTooltip(inputId, true, true)
@@ -2346,13 +2365,18 @@
       /** value 触发valueChange事件 */
       elemValueChange(type, rowSource, columnSource, value) {
         let column = Object.assign({}, columnSource)
+
         // 将caseId去除
         let row = Object.assign({}, rowSource)
         row.id = this.getCleanId(row.id)
+
         // 获取整行的数据
         let { values } = this.getValuesSync({ validate: false, rowIds: [row.id] })
         if (values.length > 0) {
+
           Object.assign(row, values[0])
+
+
         }
         this.$emit('valueChange', { type, row, column, value, target: this })
       },
@@ -2426,6 +2450,8 @@
             res.result.forEach(item => {
               for (let option of newOptions) if (option.value === item.value) return
               newOptions.push(item)
+              console.info("1====悠蓝：jselectsearch 的option赋值====================================")
+
             })
             column.options = newOptions
           } else {
@@ -2433,6 +2459,8 @@
             console.log(res.message)
             console.groupEnd()
           }
+          //悠蓝修正优化
+
         })
       },
 
@@ -2554,19 +2582,29 @@
           props['showSearch'] = true
         }
 
+
         // 判断是否是禁用的列
         props['disabled'] = (typeof col['disabled'] === 'boolean' ? col['disabled'] : props['disabled'])
 
         // 判断是否为禁用的行
         if (props['disabled'] !== true) {
+
           props['disabled'] = ((this.disabledRowIds || []).indexOf(row.id) !== -1)
+
+
         }
 
         // 判断是否禁用全部组件
         if (this.disabled === true) {
           props['disabled'] = true
         }
-
+        //注意在column表格中定义时加disabledEdit:true即可，参照 JEditableTable
+        if (col.disabledEdit ){
+          if (row.id.indexOf("_tid-") >=0) //新增的id有此特性
+            props['disabled'] = false
+          else
+            props['disabled'] = true
+        }
         return props
       },
       /** upload 辅助方法：获取 headers */
@@ -2645,13 +2683,49 @@
         // 触发valueChange 事件
         this.elemValueChange(FormTypes.list_multi, row, column, value)
       },
+
       handleSearchSelectChange(value, id, row, column) {
         this.searchSelectValues = this.bindValuesChange(value, id, 'searchSelectValues')
         this.validateOneInput(value, row, column, this.notPassedIds, true, 'change')
         this.elemValueChange(FormTypes.sel_search, row, column, value)
+
       },
       filterOption(input, option) {
-        return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+
+        //悠蓝-->支持拼音搜索
+        let select_drop_text = option.componentOptions.children[0].text.toLowerCase().trim()
+        let select_drop_pinyin = ""
+        if (mapPinyinOfTrader.has(select_drop_text)){
+          select_drop_pinyin = mapPinyinOfTrader.get(select_drop_text)
+        }else {
+          select_drop_pinyin = pinyin.ConvertPinyin(select_drop_text)
+          mapPinyinOfTrader.set(select_drop_text,pinyin.ConvertPinyin(select_drop_text))
+        }
+        let array  =  input.toLowerCase().trim().split(" ")
+        let iz_pinyin = false
+        for (let item of array) {
+          if (item.length >0 && item != "" )
+          {
+            iz_pinyin = (select_drop_pinyin.indexOf(item) >=0)
+            if (!iz_pinyin) break
+          }
+        }
+        let iz_cn = false
+        if (!iz_pinyin){
+          for (let item of array) {
+            if (item.length >0 && item != "" )
+            {
+              iz_cn = (select_drop_text.indexOf(item) >=0)
+              if (!iz_cn) break
+            }
+          }
+        }
+       // let iz_cn = select_drop_text.indexOf(input.toLowerCase().trim()) >= 0
+       // let iz_pinyin = select_drop_pinyin.indexOf(input.toLowerCase().trim()) >=0
+        return (  iz_cn || iz_pinyin);
+
+
+        //return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       },
       getEllipsisWord(content, len){
         if(!content || content.length==0){

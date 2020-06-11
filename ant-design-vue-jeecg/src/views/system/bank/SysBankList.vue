@@ -156,7 +156,7 @@
             dataIndex: '',
             key:'rowIndex',
             width:60,
-            fixed:"left",
+
             align:"center",
             customRender:function (t,r,index) {
               return parseInt(index)+1;
@@ -166,7 +166,7 @@
             title:'银行名称',
             align:"left",
             width:120,
-            fixed:"left",
+
             dataIndex: 'bankName',
             sorter: true
           },

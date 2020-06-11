@@ -197,8 +197,16 @@
 
         let color = this.form.getFieldValue("color")
         let name = this.form.getFieldValue("name")
+        if (color === null || color === "" || color === undefined){
+          color = ""
+        }
+        if (name === null || name === "" || name === undefined){
+          name = ""
+        }
+
         if (object == "name"){
           name = event.target.value;
+
         }else  if (object == "color"){
           color = event.target.value;
         }
