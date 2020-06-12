@@ -9,7 +9,7 @@
             <a-form-item label="单据号码">
               <a-input v-model="queryParam.bizNo" placeholder="请输入单据号码" default-value=""/>
             </a-form-item>
-      </a-col>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单据日期">
               <!-- v-model="queryParam.bizDate" -->
