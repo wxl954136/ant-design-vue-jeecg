@@ -2,13 +2,11 @@
   <a-table
     rowKey="id"
     size="middle"
-    table-layout="fixed"
     bordered
     :loading="loading"
     :columns="columns"
     :dataSource="dataSource"
     :pagination="false"
-    style = "width:80%"
   >
 
     <template slot="htmlSlot" slot-scope="text">
@@ -36,7 +34,6 @@
       </a-button>
     </template>
 
-
   </a-table>
 </template>
 
@@ -62,49 +59,27 @@
         columns: [
           {
             title: '商品名称',
-            align: 'left',
-            width:100,
+            align: 'center',
             dataIndex: 'skuId_dictText'
           },
           {
             title: '数量',
             align: 'center',
-            width:60,
             dataIndex: 'qty',
           },
           {
             title: '价格',
             align: 'center',
-            width:60,
             dataIndex: 'price',
           },
           {
             title: '税率',
             align: 'center',
-            width:60,
             dataIndex: 'rate',
-          },
-          {
-            title: '金额',
-            align: 'center',
-            width:60,
-            dataIndex:"",
-            customRender: function (t, r, index) {
-               return t.qty*t.price
-            }
-          },
-          {
-            title: '金额(含税)',
-            align: 'center',
-            width:60,
-            customRender: function (t, r, index) {
-              return t.qty*t.price*(1-t.rate)
-            }
           },
           {
             title: '备注',
             align: 'center',
-            width:150,
             dataIndex: 'memo',
           },
         ],

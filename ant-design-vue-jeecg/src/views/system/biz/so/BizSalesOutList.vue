@@ -7,7 +7,9 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单据日期">
-              <j-date v-model="queryParam.bizDate" placeholder="请选择单据日期"/>
+          <j-date class="query-group-cust" v-model="queryParam.bizDate_begin" placeholder="请选择开始日期"/>
+          <span class="query-group-split-cust"></span>
+          <j-date class="query-group-cust" v-model="queryParam.bizDate_end" placeholder="请选择结束日期"/>
         </a-form-item>
       </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -89,7 +91,6 @@
 
       <a-table
         ref="table"
-        :scroll="{x: 1500}"
         size="middle"
         bordered
         rowKey="id"
@@ -200,71 +201,59 @@
             customRender: (t, r, index) => parseInt(index) + 1
           },
           {
-            title: '单据编号',
-            align: 'center',
-            width:100,
-            dataIndex: 'bizNo',
-          },
-          {
-            title: '单据日期',
-            align: 'center',
-            width:100,
-            dataIndex: 'bizDate',
-          },
-          {
-            title: '仓库',
-            align: 'center',
-            width:150,
-            dataIndex: 'storeId_dictText'
-          },
-          {
-            title: '客户',
-            align: 'center',
-            width:150,
-            dataIndex: 'traderId_dictText'
-          },
-          {
-            title: '收款方式',
-            align: 'center',
-            width:80,
-            dataIndex: 'tradeMethod_dictText'
-          },
-          {
-            title: '经手人',
-            align: 'center',
-            width:80,
-            dataIndex: 'handler',
-          },
-          {
-            title: '收款银行',
-            align: 'center',
-            width:150,
-            dataIndex: 'bankId_dictText'
-          },
-          {
-            title: '备注',
-            align: 'center',
-            width:150,
-            dataIndex: 'memo',
-          },
-          {
             title: '创建人',
             align: 'center',
-            width:100,
             dataIndex: 'createBy',
           },
           {
             title: '创建日期',
             align: 'center',
-            width:140,
             dataIndex: 'createTime',
           },
           {
+            title: '单据编号',
+            align: 'center',
+            dataIndex: 'bizNo',
+          },
+          {
+            title: '单据日期',
+            align: 'center',
+            dataIndex: 'bizDate',
+          },
+          {
+            title: '仓库',
+            align: 'center',
+            dataIndex: 'storeId_dictText'
+          },
+          {
+            title: '客户',
+            align: 'center',
+            dataIndex: 'traderId_dictText'
+          },
+          {
+            title: '收款方式',
+            align: 'center',
+            dataIndex: 'tradeMethod_dictText'
+          },
+          {
+            title: '经手人',
+            align: 'center',
+            dataIndex: 'handler',
+          },
+          {
+            title: '收款银行',
+            align: 'center',
+            dataIndex: 'bankId_dictText'
+          },
+          {
+            title: '备注',
+            align: 'center',
+            dataIndex: 'memo',
+          },
+          {
             title: '操作',
-            fixed: 'right',
             dataIndex: 'action',
             align: 'center',
-            width:147,
             scopedSlots: { customRender: 'action' },
           },
         ],
