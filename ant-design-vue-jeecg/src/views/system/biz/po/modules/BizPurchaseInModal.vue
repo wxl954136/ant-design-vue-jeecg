@@ -181,7 +181,6 @@
           bizDate: {
             rules: [
               { required: true, message: '请输入单据日期!'},
-
             ],
             initialValue: new Date()
           },
@@ -333,18 +332,6 @@
         let count = 0
         for (let val of values) {
           if (val['skuId'] === value) {
-
-            if (type==="blur" || type==="change" || type ==="input"){
-              let updateCount = val["updateCount"]
-
-              if (updateCount !="" && updateCount != null )
-              {
-              //  alert("1=========" + updateCount)
-                //callback(false, '修改状态下${title}不可编辑')
-                return;
-              }
-
-            }
             if (++count >= 2) {
               callback(false, '${title}不能重复')
               return

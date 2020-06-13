@@ -189,7 +189,6 @@
 
         validatorRules: {
           bizDate: {
-
             initialValue: new Date()
           },
         },
@@ -257,11 +256,15 @@
             dataIndex: 'memo',
           },
           {
+            title: '创建人',
+            align: 'center',
+            dataIndex: 'createBy',
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             width:147,
             align: 'center',
-
             scopedSlots: { customRender: 'action' },
           },
         ],

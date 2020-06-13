@@ -82,6 +82,11 @@
             align: 'center',
             dataIndex: 'memo',
           },
+          {
+            title: '删除标记',
+            align: 'center',
+            dataIndex: 'delFlag',
+          },
         ],
         url: {
           listByMainId: '/biz.so/bizSalesOut/queryBizSalesOutDetailByMainId',

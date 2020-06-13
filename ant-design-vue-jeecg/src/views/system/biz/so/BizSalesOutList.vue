@@ -5,13 +5,13 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="7" :lg="8" :md="9" :sm="24">
             <a-form-item label="单据日期">
-          <j-date class="query-group-cust" v-model="queryParam.bizDate_begin" placeholder="请选择开始日期"/>
-          <span class="query-group-split-cust"></span>
-          <j-date class="query-group-cust" v-model="queryParam.bizDate_end" placeholder="请选择结束日期"/>
-        </a-form-item>
-      </a-col>
+              <j-date class="query-group-cust" v-model="queryParam.bizDate_begin" placeholder="选择开始日期"/>
+              <span class="query-group-split-cust"></span>
+              <j-date class="query-group-cust" v-model="queryParam.bizDate_end" placeholder="选择结束日期"/>
+            </a-form-item>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="仓库">
           <a-input v-model="queryParam.storeId" placeholder="请输入仓库"/>
@@ -108,7 +108,7 @@
         <!-- 内嵌table区域 begin -->
         <template slot="expandedRowRender" slot-scope="record">
           <a-tabs tabPosition="top">
-            <a-tab-pane tab="销售明细表" key="bizSalesOutDetail" forceRender>
+            <a-tab-pane :tab="detailTitle" key="bizSalesOutDetail" forceRender>
               <biz-sales-out-detail-sub-table :record="record"/>
             </a-tab-pane>
           </a-tabs>
@@ -170,12 +170,11 @@
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import BizSalesOutModal from './modules/BizSalesOutModal'
   import BizSalesOutDetailSubTable from './subTables/BizSalesOutDetailSubTable'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
   import JDate from '@/components/jeecg/JDate.vue'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
 
 
@@ -191,6 +190,7 @@
     data() {
       return {
         description: '销售主表列表管理页面',
+        detailTitle:"",
         // 表头
         columns: [
           {
@@ -200,40 +200,31 @@
             align: 'center',
             customRender: (t, r, index) => parseInt(index) + 1
           },
-          {
-            title: '创建人',
-            align: 'center',
-            dataIndex: 'createBy',
-          },
-          {
-            title: '创建日期',
-            align: 'center',
-            dataIndex: 'createTime',
-          },
+
           {
             title: '单据编号',
             align: 'center',
+            width:150,
             dataIndex: 'bizNo',
           },
           {
             title: '单据日期',
             align: 'center',
+            width:100,
             dataIndex: 'bizDate',
+          },
+
+          {
+            title: '客户',
+            align: 'left',
+            width:200,
+            dataIndex: 'traderId_dictText'
           },
           {
             title: '仓库',
             align: 'center',
+            width:120,
             dataIndex: 'storeId_dictText'
-          },
-          {
-            title: '客户',
-            align: 'center',
-            dataIndex: 'traderId_dictText'
-          },
-          {
-            title: '收款方式',
-            align: 'center',
-            dataIndex: 'tradeMethod_dictText'
           },
           {
             title: '经手人',
@@ -242,13 +233,26 @@
           },
           {
             title: '收款银行',
-            align: 'center',
+            align: 'left',
+            width:120,
             dataIndex: 'bankId_dictText'
+          },
+          {
+            title: '收款方式',
+            align: 'left',
+            width:90,
+            dataIndex: 'tradeMethod_dictText'
           },
           {
             title: '备注',
             align: 'center',
             dataIndex: 'memo',
+          },
+
+          {
+            title: '创建人',
+            align: 'center',
+            dataIndex: 'createBy',
           },
           {
             title: '操作',
@@ -262,7 +266,8 @@
         // 展开的行
         expandedRowKeys: [],
         url: {
-          list: '/biz.so/bizSalesOut/list',
+          //list: '/biz.so/bizSalesOut/list',
+          list: this.getListUrl("/biz.so/bizSalesOut/list/") ,
           delete: '/biz.so/bizSalesOut/delete',
           deleteBatch: '/biz.so/bizSalesOut/deleteBatch',
           exportXlsUrl: '/biz.so/bizSalesOut/exportXls',
@@ -275,8 +280,25 @@
         return window._CONFIG['domianURL'] + this.url.importExcelUrl
       }
     },
-    methods: {
+    created(){
+      let title = this.getBizType()
+      if (title == "CKD") this.detailTitle = "出库明细"
+      else if (title == "CKD") this.detailTitle = "退货明细"
 
+    },
+    methods: {
+      getBizType(){
+        let routePath = this.$route.path
+        let bizType = (routePath.toString().indexOf("CKD") >=0?"CKD":"THD")
+        return bizType
+      },
+      getListUrl(url){
+        let baseRoute= url
+        let routePath = this.$route.path
+        let bizType = (routePath.toString().indexOf("CKD") >=0?"CKD":"THD")
+
+        return baseRoute +bizType
+      },
       initDictConfig() {
       },
 
