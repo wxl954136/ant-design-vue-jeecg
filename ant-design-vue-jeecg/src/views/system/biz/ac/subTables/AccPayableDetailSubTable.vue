@@ -59,17 +59,22 @@
         dataSource: [],
         columns: [
           {
-            title: 'TITLE:TRADER',
-            align: 'center',
+            title: '供应商',
+            key:'traderId',
+            align: 'left',
+            width:300,
             dataIndex: 'traderId_dictText'
           },
           {
-            title: 'TITLE:AMOUNT',
-            align: 'center',
+            title: '应付款金额',
+            align: 'right',
+            key:'sourceAmount',
+            width:120,
             dataIndex: 'sourceAmount',
           },
           {
             title: '备注',
+            key:'memo',
             align: 'center',
             dataIndex: 'memo',
           },
@@ -99,9 +104,9 @@
       initTableHeadTitle() {
         for (let key in this.columns) {
           let obj = this.columns[key]
-          if (obj.title ==  "TITLE:TRADER") {
+          if (obj.key ==  "traderId") {
             obj.title = (this.noteType == "YFK" ? "供应商" : "客户")
-          }else if (obj.title ==  "TITLE:AMOUNT")
+          }else if (obj.key ==  "sourceAmount")
           {
             obj.title = (this.noteType == "YFK" ? "应付款金额" : "应收款金额")
           }

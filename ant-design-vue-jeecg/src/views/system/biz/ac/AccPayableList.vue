@@ -84,7 +84,7 @@
         <!-- 内嵌table区域 begin -->
         <template slot="expandedRowRender" slot-scope="record">
           <a-tabs tabPosition="top">
-            <a-tab-pane tab="应付款明细表" key="accPayableDetail" forceRender>
+            <a-tab-pane :tab="detailTitle" key="accPayableDetail" forceRender>
               <acc-payable-detail-sub-table :record="record"/>
             </a-tab-pane>
           </a-tabs>
@@ -164,6 +164,7 @@
     data() {
       return {
         description: '应付款头表列表管理页面',
+        detailTitle:"",
         // 表头
         columns: [
           {
@@ -176,21 +177,25 @@
           {
             title: '单据号',
             align: 'center',
+            width:150,
             dataIndex: 'bizNo',
           },
           {
             title: '科目',
-            align: 'center',
+            align: 'left',
+            width:200,
             dataIndex: 'subjectsId',
           },
           {
             title: '单据日期',
             align: 'center',
+            width:100,
             dataIndex: 'bizDate',
           },
           {
             title: '经手人',
             align: 'center',
+            width:100,
             dataIndex: 'handler',
           },
           {
@@ -202,6 +207,8 @@
           {
             title: '操作',
             dataIndex: 'action',
+            width:147,
+
             align: 'center',
             scopedSlots: { customRender: 'action' },
           },
@@ -211,7 +218,8 @@
         // 展开的行
         expandedRowKeys: [],
         url: {
-          list: '/biz.ac/accPayable/list',
+           // list: '/biz.ac/accPayable/list',
+          list: this.getListUrl("/biz.ac/accPayable/list/"),
           delete: '/biz.ac/accPayable/delete',
           deleteBatch: '/biz.ac/accPayable/deleteBatch',
           exportXlsUrl: '/biz.ac/accPayable/exportXls',
@@ -224,19 +232,27 @@
         return window._CONFIG['domianURL'] + this.url.importExcelUrl
       }
     },
+    created(){
+
+      let title = this.getBizType()
+      if (title == "YFK") this.detailTitle = "应付款明细"
+      else if (title == "YSK") this.detailTitle = "应收款明细"
+
+    },
     mounted() {
-      let routePath = this.$route.path
-      this.noteType = routePath.toString().indexOf("YFK") >=0?"YFK":"YSK"
-      this.initTableHeadTitle()
+
     },
     methods: {
-      initTableHeadTitle() {
-        for (let key in this.columns) {
-          let obj = this.columns[key]
-          if (obj.title == "供应商") {
-            obj.title = (this.noteType == "YFK" ? "供应商" : "客户")
-          }
-        }
+      getBizType(){
+        let routePath = this.$route.path
+        let bizType = (routePath.toString().indexOf("YFK") >=0?"YFK":"YSK")
+        return bizType
+      },
+      getListUrl(url){
+        let baseRoute= url
+        let routePath = this.$route.path
+        let bizType = (routePath.toString().indexOf("YFK") >=0?"YFK":"YSK")
+        return baseRoute +bizType
       },
       initDictConfig() {
       },

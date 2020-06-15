@@ -234,7 +234,6 @@
               validateRules: [
                 { required: true, message: '${title}不能为空' },
                 { pattern: /^(0|[1-9][0-9]*)+(\.[0-9]{1,2})?$/, message: '请输入正确的数值[格式:####.##]' },  //正则表达式大全https://c.runoob.com/front-end/854
-
               ],
             },
             {
@@ -326,7 +325,7 @@
         //target.removeRows(rowId)  //暂时保留 不要删除 ，此方法中放置将来的串号信息
       },
 
-      validateSkuHandler(type, value, row, column, callback, target){
+      validateSkuHandler(type, value, row, column, callback, target) {
 
         let {values} = target.getValuesSync({validate: false})  //获得明细行事行数据,未显示字段无法获取
         let count = 0
