@@ -54,7 +54,7 @@
       return {
         description: '应付款明细表内嵌列表',
         disableMixinCreated: true,
-        notePath:"",
+        noteType:"",
         loading: false,
         dataSource: [],
         columns: [
@@ -99,7 +99,6 @@
       this.noteType = routePath.toString().indexOf("YFK") >=0?"YFK":"YSK"
       this.initTableHeadTitle()
     },
-
     methods: {
       initTableHeadTitle() {
         for (let key in this.columns) {

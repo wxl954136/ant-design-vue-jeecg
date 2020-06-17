@@ -48,7 +48,7 @@
 
       <!-- 子表单区域 -->
       <a-tabs v-model="activeKey" @change="handleChangeTabs">
-        <a-tab-pane tab="应付款明细表" :key="refKeys[0]" :forceRender="true">
+        <a-tab-pane :tab="detailTitle" :key="refKeys[0]" :forceRender="true">
           <j-editable-table
             :ref="refKeys[0]"
             :loading="accPayableDetailTable.loading"
@@ -123,6 +123,7 @@
         refKeys: ['accPayableDetail', ],
         tableKeys:['accPayableDetail', ],
         activeKey: 'accPayableDetail',
+        detailTitle:"",
         // 应付款明细表
         accPayableDetailTable: {
           loading: false,
@@ -178,8 +179,8 @@
     },
     mounted() {
       let title = this.getBizType()
-      if (title == "CGRK") this.detailTitle = "采购入库明细"
-      else if (title == "CGTH") this.detailTitle = "采购退货明细"
+      if (title == "YFK") this.detailTitle = "应付款明细"
+      else if (title == "YSK") this.detailTitle = "应收款明细"
 
       this.initTableHeadTitle()
     },

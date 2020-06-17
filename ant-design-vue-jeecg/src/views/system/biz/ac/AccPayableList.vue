@@ -181,17 +181,18 @@
             dataIndex: 'bizNo',
           },
           {
-            title: '科目',
-            align: 'left',
-            width:200,
-            dataIndex: 'subjectsId',
-          },
-          {
             title: '单据日期',
             align: 'center',
             width:100,
             dataIndex: 'bizDate',
           },
+          {
+            title: '科目',
+            align: 'left',
+            width:200,
+            dataIndex: 'subjectsId',
+          },
+
           {
             title: '经手人',
             align: 'center',
@@ -200,7 +201,7 @@
           },
           {
             title: '备注',
-            align: 'center',
+            align: 'left',
             dataIndex: 'memo',
           },
 

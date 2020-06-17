@@ -55,21 +55,34 @@
         description: '结算明细表内嵌列表',
         disableMixinCreated: true,
         loading: false,
+        noteType:"",
         dataSource: [],
         columns: [
           {
             title: '业务单据号',
             align: 'center',
-            dataIndex: 'fromBizNo',
+            key:"payableBizNo",
+            width:300,
+            dataIndex: 'payableBizNo',
+          },
+          {
+            title: '供应商',
+            align: 'left',
+            width:300,
+            key:"traderName",
+            dataIndex: 'traderName',
           },
           {
             title: '结算金额',
-            align: 'center',
+            align: 'right',
+            width:100,
+            key:"targetAmount",
             dataIndex: 'targetAmount',
           },
           {
             title: '备注',
-            align: 'center',
+            align: 'left',
+            key:"memo",
             dataIndex: 'memo',
           },
         ],
@@ -88,8 +101,23 @@
         }
       }
     },
+    created() {
+      let routePath = this.$route.path
+      this.noteType = routePath.toString().indexOf("FKD") >=0?"FKD":"SKD"
+      this.initTableHeadTitle()
+    },
     methods: {
-
+      initTableHeadTitle() {
+        for (let key in this.columns) {
+          let obj = this.columns[key]
+          if (obj.key ==  "traderName") {
+            obj.title = (this.noteType == "FKD" ? "供应商" : "客户")
+          }else if (obj.key ==  "sourceAmount")
+          {
+            obj.title = (this.noteType == "FKD" ? "付款金额" : "收款金额")
+          }
+        }
+      },
       loadData(record) {
         this.loading = true
         this.dataSource = []

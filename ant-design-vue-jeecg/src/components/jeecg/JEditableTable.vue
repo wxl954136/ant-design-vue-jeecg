@@ -10,8 +10,9 @@
       </a-col>
       <a-col>
         <!-- 操作按钮 -->
-        <div v-if="actionButton" class="action-button">
+        <div ref = "actionButtonGroup" v-if="actionButton" class="action-button">
           <a-button type="primary" icon="plus" @click="handleClickAdd" :disabled="disabled">新增</a-button>
+
           <span class="gap"></span>
           <template v-if="selectedRowIds.length>0">
             <a-popconfirm
@@ -25,6 +26,10 @@
               <span class="gap"></span>
             </template>
           </template>
+
+          <span  v-if="yfkButtonShow" class="gap"></span>
+          <a-button  v-if="yfkButtonShow" type="primary" icon="plus" @click="getHandleYfkInfo" :disabled="disabled">应付款单</a-button>
+
         </div>
       </a-col>
       <a-col>
@@ -795,6 +800,17 @@
         type: Boolean,
         default: false
       },
+      // 是否显示获取应付款按钮
+      yfkButtonShow: {
+        type: Boolean,
+        default: false
+      },
+      // 是否显示获取应付款调用父的方法
+      handleYfkInfo: {
+        type: Function,
+        default: null
+      },
+
       // 页面是否在加载中
       loading: {
         type: Boolean,
@@ -2069,6 +2085,12 @@
       },
       handleClickAdd() {
         this.add()
+      },
+      //获取应付款明细
+      getHandleYfkInfo() {
+        if (this.handleYfkInfo) {
+          this.handleYfkInfo()
+        }
       },
       handleConfirmDelete() {
         this.removeSelectedRows()

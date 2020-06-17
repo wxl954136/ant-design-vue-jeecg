@@ -96,7 +96,7 @@
         <!-- 内嵌table区域 begin -->
         <template slot="expandedRowRender" slot-scope="record">
           <a-tabs tabPosition="top">
-            <a-tab-pane tab="结算明细表" key="accSettleDetail" forceRender>
+            <a-tab-pane :tab="detailTitle" key="accSettleDetail" forceRender>
               <acc-settle-detail-sub-table :record="record"/>
             </a-tab-pane>
           </a-tabs>
@@ -177,6 +177,7 @@
     data() {
       return {
         description: '收付款结算头表列表管理页面',
+        detailTitle:"",
         // 表头
         columns: [
           {
@@ -189,41 +190,42 @@
           {
             title: '单据号',
             align: 'center',
+            width:150,
             dataIndex: 'bizNo',
           },
           {
             title: '单据日期',
             align: 'center',
+            width:100,
             dataIndex: 'bizDate',
           },
           {
             title: '科目',
-            align: 'center',
+            align: 'left',
+            width:200,
             dataIndex: 'subjectsId',
           },
           {
             title: '银行帐户',
-            align: 'center',
+            align: 'left',
+            width:200,
             dataIndex: 'bankId_dictText'
           },
           {
             title: '经手人',
             align: 'center',
+            width:100,
             dataIndex: 'handler',
           },
           {
             title: '备注',
-            align: 'center',
+            align: 'left',
             dataIndex: 'memo',
-          },
-          {
-            title: '单据来源',
-            align: 'center',
-            dataIndex: 'noteSource',
           },
           {
             title: '操作',
             dataIndex: 'action',
+            width:147,
             align: 'center',
             scopedSlots: { customRender: 'action' },
           },
@@ -233,7 +235,8 @@
         // 展开的行
         expandedRowKeys: [],
         url: {
-          list: '/biz.ac/accSettle/list',
+          // list: '/biz.ac/accSettle/list',
+          list: this.getListUrl("/biz.ac/accSettle/list/"),
           delete: '/biz.ac/accSettle/delete',
           deleteBatch: '/biz.ac/accSettle/deleteBatch',
           exportXlsUrl: '/biz.ac/accSettle/exportXls',
@@ -246,8 +249,27 @@
         return window._CONFIG['domianURL'] + this.url.importExcelUrl
       }
     },
-    methods: {
 
+    created(){
+
+      let title = this.getBizType()
+      if (title == "FKD") this.detailTitle = "付款明细"
+      else if (title == "SKD") this.detailTitle = "收款明细"
+
+    },
+
+    methods: {
+      getBizType(){
+        let routePath = this.$route.path
+        let bizType = (routePath.toString().indexOf("FKD") >=0?"FKD":"SKD")
+        return bizType
+      },
+      getListUrl(url){
+        let baseRoute= url
+        let routePath = this.$route.path
+        let bizType = (routePath.toString().indexOf("FKD") >=0?"FKD":"SKD")
+        return baseRoute +bizType
+      },
       initDictConfig() {
       },
 
