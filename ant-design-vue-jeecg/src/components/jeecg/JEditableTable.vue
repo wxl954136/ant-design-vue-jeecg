@@ -1393,6 +1393,7 @@
 
         // let timestamp = new Date().getTime()
         let rows = this.rows
+
         let row
         for (let i = 0; i < num; i++) {
           rows = this.push({}, false, rows)
@@ -1409,6 +1410,7 @@
           row: (() => {
             let r = Object.assign({}, row)
             r.id = this.getCleanId(r.id)
+
             return r
           })(),
           target: this
@@ -1458,6 +1460,8 @@
           target: this
         })
       },
+
+
       /** 删除被选中的行 */
       removeSelectedRows() {
         this.removeRows(this.selectedRowIds)
@@ -2034,7 +2038,7 @@
               let value = item[key]
               if (value && count !== '-') {
                 try {
-                  count += Number.parseInt(value)
+                  count += Number.parseFloat(value)  //原来是parseInt改为parseFloat
                 } catch (e) {
                   count = '-'
                 }
@@ -2092,6 +2096,7 @@
           this.handleYfkInfo()
         }
       },
+
       handleConfirmDelete() {
         this.removeSelectedRows()
       },

@@ -49,7 +49,6 @@ export const JEditableTableMixin = {
 
     /** 当点击新增按钮时调用此方法 */
     add() {
-
       //默认走的是这个
       if (typeof this.addBefore === 'function') this.addBefore()
       // 默认新增空数据
@@ -90,10 +89,7 @@ export const JEditableTableMixin = {
       this.$emit('close')
     },
 
-    handleGetYfkDetail(){
 
-        alert("c===================")
-    },
     /** 查询某个tab的数据 */
     requestSubTableData(url, params, tab, success) {
       tab.loading = true

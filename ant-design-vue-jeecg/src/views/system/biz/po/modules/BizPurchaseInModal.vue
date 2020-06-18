@@ -295,7 +295,6 @@
       let title = this.getBizType()
       if (title == "CGRK") this.detailTitle = "采购入库明细"
       else if (title == "CGTH") this.detailTitle = "采购退货明细"
-
     },
 
     methods: {

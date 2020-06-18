@@ -11,133 +11,47 @@
       :body-style="{ paddingBottom: '80px' }"
       @close="onClose"
     >
-      <a-form :form="form" layout="vertical" hide-required-mark>
-        <a-row :gutter="16">
-          <a-col :span="12">
-            <a-form-item label="Name">
-              <a-input
-                v-decorator="[
-                  'name',
-                  {
-                    rules: [{ required: true, message: 'Please enter user name' }],
-                  },
-                ]"
-                placeholder="Please enter user name"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="Url">
-              <a-input
-                v-decorator="[
-                  'url',
-                  {
-                    rules: [{ required: true, message: 'please enter url' }],
-                  },
-                ]"
-                style="width: 100%"
-                addon-before="http://"
-                addon-after=".com"
-                placeholder="please enter url"
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row :gutter="16">
-          <a-col :span="12">
-            <a-form-item label="Owner">
-              <a-select
-                v-decorator="[
-                  'owner',
-                  {
-                    rules: [{ required: true, message: 'Please select an owner' }],
-                  },
-                ]"
-                placeholder="Please a-s an owner"
-              >
-                <a-select-option value="xiao">
-                  Xiaoxiao Fu
-                </a-select-option>
-                <a-select-option value="mao">
-                  Maomao Zhou
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="Type">
-              <a-select
-                v-decorator="[
-                  'type',
-                  {
-                    rules: [{ required: true, message: 'Please choose the type' }],
-                  },
-                ]"
-                placeholder="Please choose the type"
-              >
-                <a-select-option value="private">
-                  Private
-                </a-select-option>
-                <a-select-option value="public">
-                  Public
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row :gutter="16">
-          <a-col :span="12">
-            <a-form-item label="Approver">
-              <a-select
-                v-decorator="[
-                  'approver',
-                  {
-                    rules: [{ required: true, message: 'Please choose the approver' }],
-                  },
-                ]"
-                placeholder="Please choose the approver"
-              >
-                <a-select-option value="jack">
-                  Jack Ma
-                </a-select-option>
-                <a-select-option value="tom">
-                  Tom Liu
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="DateTime">
-              <a-date-picker
-                v-decorator="[
-                  'dateTime',
-                  {
-                    rules: [{ required: true, message: 'Please choose the dateTime' }],
-                  },
-                ]"
-                style="width: 100%"
-                :get-popup-container="trigger => trigger.parentNode"
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row :gutter="16">
-          <a-col :span="24">
-            <a-form-item label="Description">
-              <a-textarea
-                v-decorator="[
-                  'description',
-                  {
-                    rules: [{ required: true, message: 'Please enter url description' }],
-                  },
-                ]"
-                :rows="4"
-                placeholder="please enter url description"
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-      </a-form>
+      <a-card :bordered="false">
+        <div class="table-page-search-wrapper">
+          <a-form layout="inline"  >
+            <a-row :gutter="24">
+
+              <a-col :xl="9" :lg="10" :md="11" :sm="24">
+                <a-form-item label="往来单位">
+                  <a-input placeholder="请输入往来单位" v-model="queryParam.traderId"  ></a-input>
+                </a-form-item>
+              </a-col>
+
+
+              <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+                <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+                <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              </span>
+              </a-col>
+            </a-row>
+          </a-form>
+        </div>
+
+          <a-table
+            ref="table"
+            size="middle"
+            bordered
+            rowKey="id"
+            :columns="columns"
+            :dataSource="dataSource"
+            :pagination="ipagination"
+            :loading="loading"
+            :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+            class="j-table-force-nowrap"
+            @change="handleTableChange">
+
+          </a-table>
+
+
+      </a-card>
+
+
       <div
         :style="{
           position: 'absolute',
@@ -154,27 +68,126 @@
         <a-button :style="{ marginRight: '8px' }" @click="onClose">
           关闭
         </a-button>
-        <a-button type="primary" @click="onClose">
+        <a-button type="primary" @click="onConfirm">
           确定
         </a-button>
       </div>
+
     </a-drawer>
+
+
+
   </div>
+
+
+
+
+
 </template>
 <script>
+  import { httpAction } from '@/api/manage'
+
+  import { getAction,postAction } from '@/api/manage'
+  import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+
+
   export default {
-    data() {
-      return {
-        title:"acc-get-payable-modual-title",
-        form: this.$form.createForm(this),
-        visible: false,
-      };
+    name: "AccGetPayableModal",
+    mixins:[JeecgListMixin, mixinDevice],
+    components: {
+
     },
+    props: {
+      getSelectPayableList: {
+        type: Function,
+        default: null
+      }
+    },
+      data() {
+      return {
+        title:"acc-get-payable-modal-title",
+        form: this.$form.createForm(this),
+        dataSource: [],
+        selectedRowKeys:[],
+        selectionRows:[],
+        visible: false,
+        loading: false,
+        columns: [
+
+          {
+            title:'单据',
+            align:"center",
+            dataIndex: 'bizNo',
+            width:100,
+          },
+          {
+            title:'往来单位',
+            align:"left",
+            dataIndex: 'traderName',
+            width:150,
+            ellipsis: true,
+          },
+          {
+            title:'应付款',
+            align:"right",
+            width:60,
+            dataIndex: 'sourceAmount'
+          },
+          {
+            title:'已结款',
+            align:"right",
+            width:60,
+            dataIndex: 'targetAmount'
+          },
+          {
+            title:'应结款',
+            align:"right",
+            width:60,
+            dataIndex: 'diffAmount'
+          },
+
+        ],
+        url: {
+          list: "/biz.ac/accSettle/selectAwaitSettlelist",
+        },
+      }
+    },
+
     methods: {
+      initValues(){
+        this.selectedRowKeys=[]
+        this.selectionRows=[]
+      },
+      loadData(){
+        getAction(`${this.url.list}`).then(res=>{
+          if(res.success){
+            this.dataSource = res.result;
+            this.ipagination.total = res.result.length;
+          }
+        }).finally(() => {
+          this.loading = false
+        })
+
+      },
+
+      onSelectChange(selectedRowKeys, selectionRows) {
+        this.selectedRowKeys = selectedRowKeys;
+        this.selectionRows = selectionRows;
+      },
       showDrawer() {
         this.visible = true;
       },
       onClose() {
+        this.visible = false;
+      },
+      onConfirm() {
+        //传给父组件执行AccSettleModal
+        if (this.getSelectPayableList) {
+          this.getSelectPayableList(this.selectionRows);
+        }
+        this.initValues()
         this.visible = false;
       },
     },

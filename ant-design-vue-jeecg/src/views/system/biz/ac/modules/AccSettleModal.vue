@@ -62,14 +62,15 @@
             :maxHeight="300"
             :rowNumber="true"
             :rowSelection="true"
+            @valueChange="handleValueChange"
             :actionButton="true"/>
         </a-tab-pane>
         
       </a-tabs>
 
     </a-spin>
-    <acc-get-payable-modal ref = "getPayableModalForm" @ok="modalFormOk" ></acc-get-payable-modal>
-
+    <acc-get-payable-modal ref = "getPayableModalForm"  :getSelectPayableList = "getSelectPayableList"  @ok="modalFormOk" ></acc-get-payable-modal>
+    <a-button type="primary" icon="plus" @click="wxlTest" >测试获取数据</a-button>
   </j-modal>
 </template>
 
@@ -146,8 +147,18 @@
           loading: false,
           dataSource: [],
           columns: [
+            /*
             {
-              title: '关联的id号',
+              title: '当前id',
+              key: 'id',
+              type: FormTypes.input,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue: '',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '应付款ID',
               key: 'payableId',
               type: FormTypes.input,
               width:"200px",
@@ -155,19 +166,24 @@
               defaultValue: '',
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
+
+             */
             {
               title: '业务单据号',
               key: 'payableBizNo',
               type: FormTypes.input,
               width:"200px",
-             // disabled:true,
+              // disabled:true,
               placeholder: '请输入${title}',
               defaultValue: '',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
+              validateRules: [
+                { required: true, message: '${title}不能为空' },
+                { unique:true }
+              ],
             },
             {
               title: '往来单位',
-             key: 'traderName',
+              key: 'traderName',
               type: FormTypes.input,
               width:"300px",
               disabled:true,
@@ -178,17 +194,17 @@
             {
               title: '结算金额',
               key: 'targetAmount',
-              type: FormTypes.input,
+              type: FormTypes.inputNumber,
               width:"100px",
               placeholder: '请输入${title}',
               defaultValue: '',
+              statistics:true,
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
             {
               title: '备注',
               key: 'memo',
               type: FormTypes.input,
-
               placeholder: '请输入${title}',
               defaultValue: '',
             },
@@ -211,11 +227,13 @@
       else if (title == "SKD") this.detailTitle = "收款明细"
       this.initTableHeadTitle()
 
-
       //这里增加按钮  action-button-group
     },
     methods: {
+      handleValueChange(event) {
+        //当有任何更改时，可以重设备值
 
+      },
       getBizType(){
         let routePath = this.$route.path
         let bizType = (routePath.toString().indexOf("FKD") >=0?"FKD":"SKD")
@@ -228,10 +246,48 @@
         let bizType = routePath.toString().indexOf("FKD") >=0?"FKD":"SKD"
         return baseRoute +bizType
       },
+      handleCancel(){
+        // this.$refs.accSettleDetail.dataSource = []
+        this.accSettleDetailTable.dataSource = []
+        this.close()
+
+      },
+      wxlTest()
+      {
+        let that = this.$refs.accSettleDetail
+        that.add()
+        let rows = that.rows
+        let row = rows[rows.length - 1]
+        let record = Object.assign({}, row)
+        this.accSettleDetailTable.dataSource.push(record)
+        record.memo = "可以不"
+        record.payableBizNo = "JFC"
+      },
+      importPayableRecordToTable(value)
+      {
+        let that = this.$refs.accSettleDetail
+        that.add()
+        let rows = that.rows
+        let row = rows[rows.length - 1]
+        let record = Object.assign({}, row)
+        this.accSettleDetailTable.dataSource.push(record)
+        record.payableId = value.id
+        record.payableBizNo=value.bizNo
+        record.traderName = value.traderName
+        record.targetAmount = value.diffAmount
+      },
       handleYfkInfo(){
         this.$refs.getPayableModalForm.title = "应付款信息";
         this.$refs.getPayableModalForm.visible = true;
         // this.$refs.getPayableModalForm.edit({status:'1',permsType:'1',route:true,'parentId':null});
+
+      },
+      //AccGetPayableModal中获取选中的记录值,获取选中的应收付款记录
+      getSelectPayableList(payableRecords){
+        payableRecords.forEach((record, index) => {
+          //已经把值传给了record
+           this.importPayableRecordToTable(record)
+        })
 
       },
       initTableHeadTitle() {
