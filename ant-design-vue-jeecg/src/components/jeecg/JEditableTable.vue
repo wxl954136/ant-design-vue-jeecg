@@ -27,8 +27,12 @@
             </template>
           </template>
 
+          <!--因为文字不好直接更改，不能在每次打开modal时watch监听，因此使用两个，但是同一事件 -->
           <span  v-if="yfkButtonShow" class="gap"></span>
-          <a-button  v-if="yfkButtonShow" type="primary" icon="plus" @click="getHandleYfkInfo" :disabled="disabled">应付款单</a-button>
+          <a-button  v-if="yfkButtonShow" type="primary" icon="plus" @click="getHandleYfkInfo"  ref = "btnYsk":disabled="disabled">应付款单</a-button>
+
+          <span  v-if="yskButtonShow" class="gap"></span>
+          <a-button  v-if="yskButtonShow" type="primary" icon="plus" @click="getHandleYfkInfo"  ref = "btnYsk":disabled="disabled">应收款单</a-button>
 
         </div>
       </a-col>
@@ -802,6 +806,11 @@
       },
       // 是否显示获取应付款按钮
       yfkButtonShow: {
+        type: Boolean,
+        default: false
+      },
+      // 是否显示获取应付款按钮
+      yskButtonShow: {
         type: Boolean,
         default: false
       },
@@ -2711,7 +2720,7 @@
         this.elemValueChange(FormTypes.list_multi, row, column, value)
       },
 
-      handleSearchSelectChange(value, id, row, column) {
+      handleSearchSelectChange(value, id, row, getDetailSkuInfo) {
         this.searchSelectValues = this.bindValuesChange(value, id, 'searchSelectValues')
         this.validateOneInput(value, row, column, this.notPassedIds, true, 'change')
         this.elemValueChange(FormTypes.sel_search, row, column, value)

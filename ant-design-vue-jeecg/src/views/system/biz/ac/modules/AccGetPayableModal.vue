@@ -15,13 +15,11 @@
         <div class="table-page-search-wrapper">
           <a-form layout="inline"  >
             <a-row :gutter="24">
-
-              <a-col :xl="9" :lg="10" :md="11" :sm="24">
+              <a-col :xl="12" :lg="13" :md="14" :sm="24">
                 <a-form-item label="往来单位">
-                  <a-input placeholder="请输入往来单位" v-model="queryParam.traderId"  ></a-input>
+                  <y-search-trader-select-tag  v-model="queryParam.traderId"    excludeDisable="true" />
                 </a-form-item>
               </a-col>
-
 
               <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
@@ -32,7 +30,7 @@
             </a-row>
           </a-form>
         </div>
-
+        <div>
           <a-table
             ref="table"
             size="middle"
@@ -47,7 +45,7 @@
             @change="handleTableChange">
 
           </a-table>
-
+        </div>
 
       </a-card>
 
@@ -91,13 +89,17 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-
+  import YSearchTraderSelectTag from '@/components/youlan/YSearchTraderSelectTag'
+  import YMultiSelectTag from "@/components/youlan/YMultiSelectTag";
+  import JMultiSelectTag from "@/components/dict/JMultiSelectTag";
 
   export default {
     name: "AccGetPayableModal",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-
+      YMultiSelectTag,
+      YSearchTraderSelectTag,
+      JMultiSelectTag,
     },
     props: {
       getSelectPayableList: {
@@ -139,7 +141,7 @@
             title:'已结款',
             align:"right",
             width:60,
-            dataIndex: 'targetAmount'
+            datIndex: 'targetAmount'
           },
           {
             title:'应结款',
@@ -150,26 +152,25 @@
 
         ],
         url: {
-          list: "/biz.ac/accSettle/selectAwaitSettlelist",
+          list: this.getListUrl("/biz.ac/accSettle/selectAwaitSettlelist/"),
         },
       }
     },
-
+    mounted() {
+      //这里增加按钮  action-button-group
+    },
     methods: {
+      getListUrl(url){
+        let baseRoute= url
+        //这个$root.path取的是进来时的列表路由地址，即list
+        let routePath = this.$route.path
+        let bizType = routePath.toString().indexOf("FKD") >=0?"YFK":"YSK"
+        return baseRoute +bizType
+      },
       initValues(){
         this.selectedRowKeys=[]
         this.selectionRows=[]
-      },
-      loadData(){
-        getAction(`${this.url.list}`).then(res=>{
-          if(res.success){
-            this.dataSource = res.result;
-            this.ipagination.total = res.result.length;
-          }
-        }).finally(() => {
-          this.loading = false
-        })
-
+        this.dataSource = []
       },
 
       onSelectChange(selectedRowKeys, selectionRows) {
@@ -180,7 +181,9 @@
         this.visible = true;
       },
       onClose() {
+        this.initValues()
         this.visible = false;
+
       },
       onConfirm() {
         //传给父组件执行AccSettleModal

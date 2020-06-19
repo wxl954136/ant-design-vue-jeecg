@@ -250,6 +250,7 @@
       }
     },
 
+
     created(){
 
       let title = this.getBizType()
@@ -279,6 +280,7 @@
           this.expandedRowKeys.push(record.id)
         }
       },
+
     }
   }
 </script>

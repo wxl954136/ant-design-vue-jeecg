@@ -50,7 +50,6 @@
 
       <a-tabs v-model="activeKey" @change="handleChangeTabs">
         <!-- 子表单区域 -->
-
         <a-tab-pane :tab="detailTitle" :key="refKeys[0]" :forceRender="true">
           <j-editable-table
             :handleYfkInfo="handleYfkInfo"
@@ -58,7 +57,8 @@
             :loading="accSettleDetailTable.loading"
             :columns="accSettleDetailTable.columns"
             :dataSource="accSettleDetailTable.dataSource"
-            :yfkButtonShow = "true"
+            :yfkButtonShow ="getBizType()=='FKD'?true:false"
+            :yskButtonShow = "getBizType()=='SKD'?true:false"
             :maxHeight="300"
             :rowNumber="true"
             :rowSelection="true"
@@ -69,8 +69,11 @@
       </a-tabs>
 
     </a-spin>
-    <acc-get-payable-modal ref = "getPayableModalForm"  :getSelectPayableList = "getSelectPayableList"  @ok="modalFormOk" ></acc-get-payable-modal>
-    <a-button type="primary" icon="plus" @click="wxlTest" >测试获取数据</a-button>
+    <acc-get-payable-modal ref = "getPayableModalForm"  :getSelectPayableList = "getSelectPayableList"  ></acc-get-payable-modal>
+
+    <!--
+    <a-button type="primary" icon="plus" @click="wxlTest"  ref = "wxlTest">测试获取数据</a-button>
+    -->
   </j-modal>
 </template>
 
@@ -157,23 +160,23 @@
               defaultValue: '',
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
+             */
+
             {
               title: '应付款ID',
               key: 'payableId',
-              type: FormTypes.input,
+              type: FormTypes.hidden,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue: '',
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
-
-             */
             {
               title: '业务单据号',
               key: 'payableBizNo',
               type: FormTypes.input,
               width:"200px",
-              // disabled:true,
+              disabled:true,
               placeholder: '请输入${title}',
               defaultValue: '',
               validateRules: [
@@ -211,7 +214,7 @@
           ]
         },
         url: {
-          add: "/biz.ac/accSettle/add",
+          // add: "/biz.ac/accSettle/add",
           add: this.getAddUrl("/biz.ac/accSettle/add/"),//"/biz.po/bizPurchaseIn/add",
           edit: "/biz.ac/accSettle/edit",
           accSettleDetail: {
@@ -220,13 +223,22 @@
         }
       }
     },
+    // watch: {
+    //   eachtime: {
+    //     handler() {
+    //       //当变化的时候更新
+    //       this.changeSettleButtonContent()
+    //     },
+    //     // 代表在wacth里声明了firstName这个方法之后立即先去执行handler方法，如果设置了false，那么效果和上边例子一样
+    //     immediate: true
+    //   }
+    // },
     mounted() {
-
       let title = this.getBizType()
       if (title == "FKD") this.detailTitle = "付款明细"
       else if (title == "SKD") this.detailTitle = "收款明细"
       this.initTableHeadTitle()
-
+      // this.changeSettleButtonContent()
       //这里增加按钮  action-button-group
     },
     methods: {
@@ -247,21 +259,41 @@
         return baseRoute +bizType
       },
       handleCancel(){
-        // this.$refs.accSettleDetail.dataSource = []
         this.accSettleDetailTable.dataSource = []
         this.close()
 
       },
+      changeSettleButtonContent()
+      {
+        let settleButton =  this.$refs.accSettleDetail.$refs.btnYskYfk
+        let settleButtonHtml = settleButton.$el.innerHTML
+        let buttonContent = "应付款单"
+        if (this.getBizType() == "SKD"){
+          buttonContent = "应收款单"
+          settleButtonHtml = settleButtonHtml.replace("应付款单",buttonContent)
+        }
+        settleButton.$el.innerHTML = settleButtonHtml
+
+      },
       wxlTest()
       {
-        let that = this.$refs.accSettleDetail
-        that.add()
-        let rows = that.rows
-        let row = rows[rows.length - 1]
-        let record = Object.assign({}, row)
-        this.accSettleDetailTable.dataSource.push(record)
-        record.memo = "可以不"
-        record.payableBizNo = "JFC"
+        this.changeSettleButtonContent()
+        //放在JEditableTable中
+        //获取子组件中的子组件
+
+
+         // settlButton.$el.value = "测试一下"
+
+
+
+        // let that = this.$refs.accSettleDetail
+        // that.add()
+        // let rows = that.rows
+        // let row = rows[rows.length - 1]
+        // let record = Object.assign({}, row)
+        // this.accSettleDetailTable.dataSource.push(record)
+        // record.memo = "可以不"
+        // record.payableBizNo = "JFC"
       },
       importPayableRecordToTable(value)
       {
@@ -277,10 +309,8 @@
         record.targetAmount = value.diffAmount
       },
       handleYfkInfo(){
-        this.$refs.getPayableModalForm.title = "应付款信息";
+        this.$refs.getPayableModalForm.title = (this.getBizType() == "SKD"?"应收款信息":"应付款信息");
         this.$refs.getPayableModalForm.visible = true;
-        // this.$refs.getPayableModalForm.edit({status:'1',permsType:'1',route:true,'parentId':null});
-
       },
       //AccGetPayableModal中获取选中的记录值,获取选中的应收付款记录
       getSelectPayableList(payableRecords){
@@ -297,7 +327,7 @@
             obj.title = (this.getBizType() == "FKD" ? "供应商" : "客户")
           }else if (obj.key ==  "payableBizNo")
           {
-            obj.title = (this.getBizType() == "FKD" ? "应付款单据号" : "应收款单据号")
+            obj.title = (this.getBizType() == "FKD" ? "应付款单据" : "应收款单据")
           }
         }
       },
@@ -319,9 +349,7 @@
       },
       /** 整理成formData */
       classifyIntoFormData(allValues) {
-
         let main = Object.assign(this.model, allValues.formValue)
-
         return {
           ...main, // 展开
           accSettleDetailList: allValues.tablesValue[0].values,

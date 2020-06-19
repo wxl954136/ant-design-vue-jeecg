@@ -14,7 +14,7 @@
     :notFoundContent="loading ? undefined : null"
   >
     <a-spin v-if="loading" slot="notFoundContent" size="small"/>
-    <a-select-option v-for="d in options" :key="d.id"  :disabled="(d.enableFlag=='1')?false:true">{{ d.name }}</a-select-option>
+    <a-select-option v-for="d in options" :key="d.id"   :disabled="excludeDisable?false:((d.enableFlag=='1')?false:true)">{{ d.name }}</a-select-option>
   </a-select>
 </template>
 
@@ -34,6 +34,7 @@
       dict: String,
       dictOptions: Array,
       async: Boolean,
+      excludeDisable:Boolean,  //不考虑enableFlag,即disable属性,查询时均可选
       placeholder:{
         type:String,
         default:"请选择",

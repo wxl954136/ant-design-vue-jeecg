@@ -72,6 +72,7 @@ export const JeecgListMixin = {
       }
       var params = this.getQueryParams();//查询条件
       this.loading = true;
+
       getAction(this.url.list, params).then((res) => {
         if (res.success) {
           this.dataSource = res.result.records;
@@ -105,6 +106,7 @@ export const JeecgListMixin = {
         sqp['superQueryParams']=encodeURI(this.superQueryParams)
         sqp['superQueryMatchType'] = this.superQueryMatchType
       }
+
 
       //悠蓝:目的是为了像银行，仓库中等模块，如果没有公gsdm，默认加上gsdm
       if (!this.queryParam.gsdm || this.queryParam.gsdm === 'undefined')
