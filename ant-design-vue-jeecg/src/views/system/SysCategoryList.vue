@@ -77,6 +77,11 @@
             dataIndex: 'name'
           },
           {
+            title:'全称',
+            align:"left",
+            dataIndex: 'fullName'
+          },
+          {
             title:'分类编码',
             align:"left",
             dataIndex: 'code'

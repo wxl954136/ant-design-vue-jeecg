@@ -24,10 +24,7 @@
           <span>打印内容:</span>
           <a-input style="width: 80%" v-model="printContent"/>
         </a-col>
-        <a-col :span="24" style="margin-top: 20px">
-          <span>打印目的:</span>
-          <a-input style="width: 80%" v-model="printReason"/>
-        </a-col>
+
         <a-col style="margin-top: 20px" :span="24">
           <span>打印图片:</span>
           <br/>

@@ -23,7 +23,9 @@
         </a-form-item>
           
         <a-form-item label="分类名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+
           <a-input v-decorator="[ 'name', validatorRules.name]" placeholder="请输入分类名称"></a-input>
+          <a-input  v-show="true" v-decorator="[ 'fullName']" placeholder="全称"></a-input>
         </a-form-item>
           
         <!--<a-form-item label="类型编码" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -104,7 +106,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'pid','name','code'))
+          this.form.setFieldsValue(pick(this.model,'pid','name','fullName','code'))
         })
       },
       close () {
@@ -147,7 +149,7 @@
         this.close()
       },
       popupCallback(row){
-        this.form.setFieldsValue(pick(row,'pid','name','code'))
+        this.form.setFieldsValue(pick(row,'pid','name','fullName','code'))
       },
       submitSuccess(formData){
         if(!formData.id){
