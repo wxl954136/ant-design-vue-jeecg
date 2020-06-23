@@ -16,7 +16,7 @@
             ref="treeSelect"
             placeholder="请选择父级节点"
             v-decorator="['pid', validatorRules.pid]"
-            dict="sys_category,name,id"
+            dict = "sys_category,name,id"
             pidField="pid"
             pidValue="0">
           </j-tree-select>
@@ -25,7 +25,7 @@
         <a-form-item label="分类名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
 
           <a-input v-decorator="[ 'name', validatorRules.name]" placeholder="请输入分类名称"></a-input>
-          <a-input  v-show="true" v-decorator="[ 'fullName']" placeholder="全称"></a-input>
+
         </a-form-item>
           
         <!--<a-form-item label="类型编码" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -98,6 +98,10 @@
     created () {
     },
     methods: {
+      getCategoryDictInfo(dictItem){
+        let result = dictItem + ", gsdm = '" +  Vue.ls.get(USER_INFO).gsdm + "'"
+        return result
+      },
       add () {
         this.edit({});
       },
@@ -106,7 +110,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'pid','name','fullName','code'))
+          this.form.setFieldsValue(pick(this.model,'pid','name','code'))
         })
       },
       close () {
@@ -149,7 +153,7 @@
         this.close()
       },
       popupCallback(row){
-        this.form.setFieldsValue(pick(row,'pid','name','fullName','code'))
+        this.form.setFieldsValue(pick(row,'pid','name','code'))
       },
       submitSuccess(formData){
         if(!formData.id){

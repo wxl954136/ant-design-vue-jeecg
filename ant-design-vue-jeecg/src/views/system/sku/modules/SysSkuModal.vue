@@ -49,7 +49,7 @@
         <a-row style="width: 100%;">
           <a-col :span="24/2">
             <a-form-item label="商品分类" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-category-select v-decorator="['classifyId', validatorRules.classifyId]" pcode="B03" placeholder="请选择商品分类" />
+              <j-category-select v-decorator="['classifyId', validatorRules.classifyId]" categoryType = "SPFL"   placeholder="请选择商品分类" />
             </a-form-item>
           </a-col>
           <a-col :span="24/2">

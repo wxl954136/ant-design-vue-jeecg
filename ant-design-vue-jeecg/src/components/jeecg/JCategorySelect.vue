@@ -14,9 +14,9 @@
   </a-tree-select>
 </template>
 <script>
-
+  import Vue from 'vue'
   import { getAction } from '@/api/manage'
-
+  import {USER_INFO} from "@/store/mutation-types"
   export default {
     name: 'JCategorySelect',
     props: {
@@ -55,6 +55,11 @@
         required:false
       },
       pcode:{
+        type:String,
+        default:'',
+        required:false
+      },
+      categoryType:{
         type:String,
         default:'',
         required:false

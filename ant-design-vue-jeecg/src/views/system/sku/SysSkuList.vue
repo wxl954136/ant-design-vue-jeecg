@@ -27,7 +27,7 @@
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="12">
               <a-form-item label="商品分类">
-                <j-category-select placeholder="请选择商品分类" v-model="queryParam.classifyId" pcode="B03"/>
+                <j-category-select placeholder="请选择商品分类" v-model="queryParam.classifyId" pcode="A01"/>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="12">
@@ -293,7 +293,7 @@
     },
     methods: {
       initDictConfig(){
-        loadCategoryData({code:'B03'}).then((res) => {
+        loadCategoryData({categoryType:'SPFL'}).then((res) => {
           if (res.success) {
             this.$set(this.dictOptions, 'classifyId', res.result)
           }

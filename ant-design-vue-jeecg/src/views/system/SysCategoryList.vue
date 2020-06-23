@@ -35,15 +35,18 @@
         @change="handleTableChange"
         @expand="handleExpand"
         v-bind="tableProps">
-        
-        <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-          <a-divider type="vertical" />
-          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record)">
-            <a>删除</a>
-          </a-popconfirm>
-          <a-divider type="vertical" />
-          <a @click="handleAddSub(record)">添加下级</a>
+
+        <span  slot="action" slot-scope="text, record">
+          <div >
+            <!--v-if= "record.lockEnable=='0'" -->
+            <a @click="handleEdit(record)" :disabled="record.lockEnable=='1'?true:false">编辑</a>
+            <a-divider type="vertical" />
+            <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record)">
+              <a :disabled="record.lockEnable=='1'?true:false">删除</a>
+            </a-popconfirm>
+            <a-divider type="vertical" />
+            <a @click="handleAddSub(record)">添加下级</a>
+          </div>
         </span>
 
       </a-table>
@@ -75,12 +78,9 @@
             title:'分类名称',
             align:"left",
             dataIndex: 'name'
+
           },
-          {
-            title:'全称',
-            align:"left",
-            dataIndex: 'fullName'
-          },
+
           {
             title:'分类编码',
             align:"left",
@@ -119,7 +119,16 @@
           // 列表项是否可选择
           rowSelection: {
             selectedRowKeys: _this.selectedRowKeys,
-            onChange: (selectedRowKeys) => _this.selectedRowKeys = selectedRowKeys
+            getCheckboxProps: record => ({
+              props: {
+                disabled: (record.lockEnable=="1"?true:false), // Column configuration not to be checked
+                name: record.id,
+              }
+            }),
+            onChange: (selectedRowKeys) => {
+              _this.selectedRowKeys = selectedRowKeys
+            },
+
           }
         }
       }
