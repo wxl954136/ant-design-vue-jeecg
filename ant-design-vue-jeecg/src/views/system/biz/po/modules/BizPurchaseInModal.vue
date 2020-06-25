@@ -106,7 +106,7 @@
             :rowSelection="true"
             :actionButton="true" >
             <template v-slot:action="props">
-              <a @click="handleDelete(props)">查看</a> &nbsp;
+              <a @click="handleSerial(props)">串号</a> &nbsp;
               <a @click="handleDelete(props)">删除</a>
             </template>
             <span slot="memo" slot-scope="text, record">
@@ -118,18 +118,22 @@
       </a-tabs>
 
     </a-spin>
+    <biz-serial-modal ref = "getBizSerialModalInfoForm"  :getBizSerialModalInfo = "getBizSerialModalInfo"  ></biz-serial-modal>
+
   </j-modal>
 </template>
 
 <script>
   import Vue from 'vue'
   import pick from 'lodash.pick'
+  import {getAction} from '@/api/manage'
   import {FormTypes, getRefPromise} from '@/utils/JEditableTableUtil'
   import {JEditableTableMixin} from '@/mixins/JEditableTableMixin'
   import JDate from '@/components/jeecg/JDate'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JSearchSelectTag from '@/components/dict/JSearchSelectTag'
   import YSearchTraderSelectTag from '@/components/youlan/YSearchTraderSelectTag'
+  import BizSerialModal from '../../core/BizSerialModal'
   import {USER_INFO} from "@/store/mutation-types"
   //支持转换为拼音
   const mapPinyinOfTrader = new Map()
@@ -143,6 +147,7 @@
       JDictSelectTag,
       JSearchSelectTag,
       YSearchTraderSelectTag,
+      BizSerialModal,
 
     },
     data() {
@@ -307,6 +312,26 @@
         // })
 
       },
+
+      handleSerial(props){
+        let record = props.getValue()
+        let skuId = record.skuId
+
+        let skuInfoUrl =  "/sku/sysSku/queryById"
+        let params = {};//查询条件
+        params.id = skuId;
+        let  that  = this.$refs.getBizSerialModalInfoForm
+        getAction(skuInfoUrl, params).then((res) => {
+          if (res.success && res.result) {
+           // alert(res.result.fullName)
+            that.parentSku.skuFullName = res.result.fullName
+          }
+        })
+        that.parentSku.skuId = record.skuId
+        // that.parentSku.skuQty = that.dataSource.length
+        that.title = "串号信息" ;
+        that.visible = true;
+      },
       handleDelete(props) {
 
         // 参数解释
@@ -427,7 +452,20 @@
      },
       getFormFieldValue(field){
         return this.form.getFieldValue(field)
-      }
+      },
+      //AccGetPayableModal中获取选中的记录值,获取选中的应收付款记录
+
+
+      getBizSerialModalInfo(records){
+          alert("1====从串号接收传值 =" + records.length)
+        records.forEach((record, index) => {
+            alert(record.serial1)
+          //已经把值传给了record
+
+          //this.importPayableRecordToTable(record)
+        })
+
+      },
 
     }
   }

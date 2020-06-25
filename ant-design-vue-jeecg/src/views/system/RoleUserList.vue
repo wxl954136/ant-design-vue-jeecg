@@ -102,7 +102,7 @@
 
               <a-col :md="12" :sm="12">
                 <a-form-item label="用户账号">
-                  <a-input placeholder="" v-model="queryParam2.username"></a-input>
+                  <a-input placeholder="" v-model="queryParam2.usersign"></a-input>
                 </a-form-item>
               </a-col>
               <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
@@ -275,10 +275,11 @@
               scopedSlots: { customRender: 'action' }
             }
           ],
-        columns2: [{
+        columns2: [
+          {
           title: '用户账号',
           align: 'center',
-          dataIndex: 'username',
+          dataIndex: 'usersign',
           width: 120
         },
           {
