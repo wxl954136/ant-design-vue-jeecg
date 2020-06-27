@@ -164,6 +164,7 @@
 
                         <input
                           :id="id"
+
                           v-bind="buildProps(row,col)"
                           :data-input-number="col.type === formTypes.inputNumber"
                           :placeholder="replaceProps(col, col.placeholder)"
@@ -2258,6 +2259,7 @@
       },
       /** input事件 */
       handleInputCommono(target, index, row, column) {
+
         let oldValue = this.inputValues[index][column.key] || ''
         let { value, dataset, selectionStart } = target
         let type = FormTypes.input
@@ -2276,6 +2278,7 @@
           }
         }
         // 存储输入的值
+
         this.inputValues[index][column.key] = value
         // 做单个表单验证
         this.validateOneInput(value, row, column, this.notPassedIds, true, 'input')
@@ -2720,7 +2723,7 @@
         this.elemValueChange(FormTypes.list_multi, row, column, value)
       },
 
-      handleSearchSelectChange(value, id, row, getDetailSkuInfo) {
+      handleSearchSelectChange(value, id, row, column) {
         this.searchSelectValues = this.bindValuesChange(value, id, 'searchSelectValues')
         this.validateOneInput(value, row, column, this.notPassedIds, true, 'change')
         this.elemValueChange(FormTypes.sel_search, row, column, value)

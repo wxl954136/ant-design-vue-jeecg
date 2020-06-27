@@ -30,8 +30,8 @@
       <!-- 操作按钮区域 -->
       <div class="table-operator" >
         <a-button @click="handleAddSerial" type="primary" icon="plus">新增</a-button>
-        <a-button type="primary" icon="download" @click="handleExportXls('biz_serial')">导出</a-button>
-        <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+        <a-button type="primary" icon="download"  >导出</a-button>
+        <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader"  >
           <a-button type="primary" icon="import">导入</a-button>
         </a-upload>
 
@@ -171,6 +171,7 @@
         searchedColumn: '',
         inputSerial:"",
         parentSku:{
+          selectRowId:"",  //
           skuId:"",
           skuFullName:"",
           skuQty:0,
@@ -329,6 +330,7 @@
         if (inputSerials.length == 3) {
           serial.serial1 = inputSerials[0] + "," + inputSerials[1] + "," + inputSerials[2]
         }
+        serial.headId =  this.parentSku.selectRowId
         serial.id = this.generateId()
         this.dataSource.push(serial)
         let len = this.dataSource.length
@@ -364,10 +366,11 @@
       onConfirm() {
         //传给父组件执行AccSettleModal
         if (this.getBizSerialModalInfo) {
-          this.getBizSerialModalInfo(this.dataSource);
+          this.getBizSerialModalInfo(this.dataSource,this.parentSku.selectRowId );
         }
         this.initValues()
         this.visible = false;
+
       },
       handleSearch(selectedKeys, confirm, dataIndex) {
         confirm();

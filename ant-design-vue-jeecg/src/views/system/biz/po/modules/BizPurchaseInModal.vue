@@ -85,7 +85,7 @@
           </a-col>
           <a-col :xs="24" :sm="12">
             <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['memo']" placeholder="请输入备注"></a-input>
+              <a-input ref = "memo" v-decorator="['memo']" placeholder="请输入备注"></a-input>
             </a-form-item>
           </a-col>
 
@@ -287,7 +287,7 @@
         url: {
           add: this.getAddUrl("/biz.po/bizPurchaseIn/add/"),//"/biz.po/bizPurchaseIn/add",
           edit: "/biz.po/bizPurchaseIn/edit",
-          bizPurchaseInDetail: {
+          bizPurchaseInDetail: {//获得后台数据？ yes
             list: '/biz.po/bizPurchaseIn/queryBizPurchaseInDetailByMainId'
           },
           traderList:"/trader/sysTrader/querySysTraderList"
@@ -313,41 +313,8 @@
 
       },
 
-      handleSerial(props){
-        let record = props.getValue()
-        let skuId = record.skuId
 
-        let skuInfoUrl =  "/sku/sysSku/queryById"
-        let params = {};//查询条件
-        params.id = skuId;
-        let  that  = this.$refs.getBizSerialModalInfoForm
-        getAction(skuInfoUrl, params).then((res) => {
-          if (res.success && res.result) {
-           // alert(res.result.fullName)
-            that.parentSku.skuFullName = res.result.fullName
-          }
-        })
-        that.parentSku.skuId = record.skuId
-        // that.parentSku.skuQty = that.dataSource.length
-        that.title = "串号信息" ;
-        that.visible = true;
-      },
-      handleDelete(props) {
 
-        // 参数解释
-        // props.index ：当前行的下标
-        // props.text ：当前值，可能是defaultValue定义的值，也可能是从dataSource中取出的值
-        // props.rowId ：当前选中行的id，如果是新增行则是临时id
-        // props.column ：当前操作的列
-        // props.getValue ：这是一个function，执行后可以获取当前行的所有值（禁止在template中使用）
-        //                  例：const value = props.getValue()
-        // props.target ：触发当前事件的实例，可直接调用该实例内的方法（禁止在template中使用）
-        //                  例：target.add()
-        alert(props.rowId)  //当前行的唯一id
-        // 使用实例：删除当前操作的行
-        let { rowId, target } = props
-        //target.removeRows(rowId)  //暂时保留 不要删除 ，此方法中放置将来的串号信息
-      },
 
       validateSkuHandler(type, value, row, column, callback, target) {
 
@@ -381,38 +348,7 @@
         let bizType = routePath.toString().indexOf("CGRK") >=0?"CGRK":"CGTH"
         return baseRoute +bizType
       },
-      /*
-      filterOption(input, option) {
-        let select_drop_text = option.componentOptions.children[0].text.toLowerCase().trim()
-        let select_drop_pinyin = ""
-        if (mapPinyinOfTrader.has(select_drop_text)){
-            select_drop_pinyin = mapPinyinOfTrader.get(select_drop_text)
-        }
-        let iz_cn = select_drop_text.indexOf(input.toLowerCase().trim()) >= 0
-        let iz_pinyin = select_drop_pinyin.indexOf(input.toLowerCase().trim()) >=0
-        return (  iz_cn || iz_pinyin);
-      },
 
-      //直接action的访问东西， 同时自己定义a-select
-      getTraderList(){
-        let formData = {};//传条件，公司代码等一律从后台取
-        let method = "get"
-        let httpurl = this.url.traderList
-        httpAction(httpurl, formData, method).then((res) => {
-            if (res.success) {
-              for(let i=0;i<res.result.length;i++){
-                let enable = (res.result[i].enableFlag=="1"?true:false)
-                mapPinyinOfTrader.set(res.result[i].name.toLowerCase().trim(),pinyin.ConvertPinyin(res.result[i].name.toLowerCase()))
-                this.traderDataList.push({
-                  id: res.result[i].id,
-                  name: res.result[i].name,
-                  enableFlag: enable
-                })
-              }
-            }
-        })
-      },
-*/
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
         return Promise.all(values)
@@ -422,7 +358,6 @@
       },
       /** 调用完edit()方法之后会自动调用此方法 */
       editAfter() {
-
         console.log("JEditableTableMixin.js，即新增按钮后，会调用此方法")
         let fieldval = pick(this.model,'bizNo','bizDate','traderId','storeId','tradeMethod','handler','memo')
         this.$nextTick(() => {
@@ -431,17 +366,30 @@
         // 加载子表数据
 
         if (this.model.id) {
-          let params = { id: this.model.id }
+          let params = { id: this.model.id } // 执行结果？怎么看，没明白  //放在？
           this.requestSubTableData(this.url.bizPurchaseInDetail.list, params, this.bizPurchaseInDetailTable)
         }
+
+
       },
       /** 整理成formData */
       classifyIntoFormData(allValues) {
+        let sourceDetail = this.bizPurchaseInDetailTable.dataSource
+        let detail = allValues.tablesValue[0].values
+        for(let i = 0 ; i< detail.length ; i++){
+          let record = sourceDetail.find(item => {
+            return item.id == detail[i].id;
+          });
+          if (null != record && undefined != record){
+            detail[i].listBizFlowSerial = []
+            detail[i].listBizFlowSerial = record.listBizFlowSerial}
+        }
         let main = Object.assign(this.model, allValues.formValue)
-
         return {
           ...main, // 展开
-          bizPurchaseInDetailList: allValues.tablesValue[0].values,
+          bizPurchaseInDetailList: detail,
+         // bizPurchaseInDetailList: allValues.tablesValue[0].values,
+
         }
       },
       validateError(msg){
@@ -453,18 +401,100 @@
       getFormFieldValue(field){
         return this.form.getFieldValue(field)
       },
-      //AccGetPayableModal中获取选中的记录值,获取选中的应收付款记录
-
-
-      getBizSerialModalInfo(records){
-          alert("1====从串号接收传值 =" + records.length)
-        records.forEach((record, index) => {
-            alert(record.serial1)
-          //已经把值传给了record
-
-          //this.importPayableRecordToTable(record)
+      handleDelete(props) {
+        let { rowId, target } = props
+        let values=[]
+        //特别注意，inputValues和dataSources是分离的
+        target.inputValues.forEach((item, index) => {
+          if (props.index == index){
+            // item.qty = 1000
+            // item.memo = "input再不显示，我要疯了"
+            // alert(item.listBizFlowSerial.length)
+          }
+          values.push(item)
         })
+        this.$refs.bizPurchaseInDetail.setValues(values)
 
+
+        //let { rowId, target } = props
+        //target.removeRows(props.rowId) // 删除时注意放开
+        //target.dataSource[0].qty = 10000
+
+
+
+        //alert(target.getDeleteIds())
+        // target.getDeleteIds() 里面的方法
+        // 参数解释
+        // props.index ：当前行的下标
+        // props.text ：当前值，可能是defaultValue定义的值，也可能是从dataSource中取出的值
+        // props.rowId ：当前选中行的id，如果是新增行则是临时id
+        // props.column ：当前操作的列
+        // props.getValue ：这是一个function，执行后可以获取当前行的所有值（禁止在template中使用）
+        //                  例：const value = props.getValue()
+        // props.target ：触发当前事件的实例，可直接调用该实例内的方法（禁止在template中使用）
+        //                  例：target.add()
+        // 使用实例：删除当前操作的行
+        // let { rowId, target } = props
+        //target.removeRows(rowId)  //暂时保留 不要删除 ，此方法中放置将来的串号信息
+      },
+      handleSerial(props){
+        let record = props.getValue()
+        let skuInfoUrl =  "/sku/sysSku/queryById"
+        let params = {};//查询条件
+        params.id = record.skuId;
+        let  that  = this.$refs.getBizSerialModalInfoForm
+        that.parentSku.selectRowId = record.id
+        getAction(skuInfoUrl, params).then((res) => {
+          if (res.success && res.result) {
+            that.parentSku.skuFullName = res.result.fullName
+          }
+        })
+        that.parentSku.skuId = record.skuId
+        if (record.listBizFlowSerial == null || undefined == record.listBizFlowSerial )
+        {
+          Object.assign(record, {listBizFlowSerial:[]});
+        }
+        //动态添加属性
+        if (record.listBizFlowSerial == null || undefined == record.listBizFlowSerial )
+        {
+          that.dataSource = record.listBizFlowSerial   //没有 jiran baocunle ,zai load yici
+        }else {
+          Object.assign(record, {listBizFlowSerial:[]});  //添加属性
+          that.dataSource = record.listBizFlowSerial
+        }
+        that.title = "串号信息" ;
+        that.visible = true;
+      },
+
+      /**
+       * @serialRecords : 串号记录
+       *  @selectRowId：到串号组件时的行id,再回传回来进行相应的判断
+       * */
+      getBizSerialModalInfo(serialRecords,selectRowId){
+
+        let that = this.bizPurchaseInDetailTable.dataSource
+        let record = that.find(item => {
+         return item.id == selectRowId;
+        });
+        let serial = {listBizFlowSerial:[]}
+        serial.listBizFlowSerial = serialRecords
+        Object.assign(record, serial);  //添加属性
+
+
+
+
+
+
+
+        /*
+        alert(record.listBizFlowSerial.length)
+        for(let k = 0 ; k <that.length ; k++ ){
+          that[k].qty = that[k].qty * 2
+        }
+*/
+        // let serial = {listBizFlowSerial:[]}
+        // serial.listBizFlowSerial = serialRecords
+        // Object.assign(record, serial);  //添加属性
       },
 
     }
