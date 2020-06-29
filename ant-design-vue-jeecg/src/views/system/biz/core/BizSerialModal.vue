@@ -151,7 +151,12 @@
       getBizSerialModalInfo: {
         type: Function,
         default: null
-      }
+      },
+      setCurrentRowQty: {
+        type: Function,
+        default: null
+      },
+
     },
     data() {
       return {
@@ -176,9 +181,9 @@
           skuFullName:"",
           skuQty:0,
         },
-
         caseId: `_jet-${randomString(6)}-`,
         tempId: `_tid-${randomString(6)}`,
+        parentRowProps:null,
         dataSource: [],
         selectedRowKeys:[],
         selectionRows:[],
@@ -302,6 +307,7 @@
         this.selectSerialNums = `${value}`
       },
       handleAddSerial(){
+
         let serial = {}
         let inputSerials = this.inputSerial.split(',')
         for(let index = 0 ; index < inputSerials.length; index++){
@@ -320,7 +326,6 @@
           this.inputSerial =  this.inputSerial + ","
           return
         }
-
         if (inputSerials.length == 1) {
           serial.serial1 = inputSerials[0]
         }
@@ -332,13 +337,17 @@
         }
         serial.headId =  this.parentSku.selectRowId
         serial.id = this.generateId()
+        serial.skuId =  this.parentSku.skuId
+
         this.dataSource.push(serial)
         let len = this.dataSource.length
         let currentPage = Math.floor(len / 10) + 1  //光标定位在最后一页
         this.ipagination.current = currentPage;
         this.inputSerial = ""
         this.parentSku.skuQty = this.dataSource.length
-
+        if (this.setCurrentRowQty) {
+          this.setCurrentRowQty(this.parentRowProps,this.dataSource.length);
+        }
       },
       handleDeleteSerial(record)
       {

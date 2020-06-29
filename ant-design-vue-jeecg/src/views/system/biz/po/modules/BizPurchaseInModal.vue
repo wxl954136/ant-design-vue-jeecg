@@ -118,7 +118,12 @@
       </a-tabs>
 
     </a-spin>
-    <biz-serial-modal ref = "getBizSerialModalInfoForm"  :getBizSerialModalInfo = "getBizSerialModalInfo"  ></biz-serial-modal>
+    <biz-serial-modal ref = "getBizSerialModalInfoForm"
+                      :getBizSerialModalInfo = "getBizSerialModalInfo"
+                      :setCurrentRowQty = "setCurrentRowQty"
+    >
+
+    </biz-serial-modal>
 
   </j-modal>
 </template>
@@ -376,13 +381,23 @@
       classifyIntoFormData(allValues) {
         let sourceDetail = this.bizPurchaseInDetailTable.dataSource
         let detail = allValues.tablesValue[0].values
+        let serialForm = this.$refs.getBizSerialModalInfoForm
+
         for(let i = 0 ; i< detail.length ; i++){
           let record = sourceDetail.find(item => {
             return item.id == detail[i].id;
           });
           if (null != record && undefined != record){
+            //整理串号id为干净的id
+            let serials = record.listBizFlowSerial
+            if( null != serials && undefined != serials  ){
+              for (let j = 0 ; j <serials.length ;j++){
+                serials[j].id = serialForm.getCleanId(serials[j].id)
+              }
+            }
             detail[i].listBizFlowSerial = []
-            detail[i].listBizFlowSerial = record.listBizFlowSerial}
+            detail[i].listBizFlowSerial = record.listBizFlowSerial
+          }
         }
         let main = Object.assign(this.model, allValues.formValue)
         return {
@@ -407,8 +422,8 @@
         //特别注意，inputValues和dataSources是分离的
         target.inputValues.forEach((item, index) => {
           if (props.index == index){
-            // item.qty = 1000
-            // item.memo = "input再不显示，我要疯了"
+             item.qty = 88
+             item.memo = "input再不显示，我要疯了---"
             // alert(item.listBizFlowSerial.length)
           }
           values.push(item)
@@ -419,9 +434,6 @@
         //let { rowId, target } = props
         //target.removeRows(props.rowId) // 删除时注意放开
         //target.dataSource[0].qty = 10000
-
-
-
         //alert(target.getDeleteIds())
         // target.getDeleteIds() 里面的方法
         // 参数解释
@@ -438,7 +450,17 @@
         //target.removeRows(rowId)  //暂时保留 不要删除 ，此方法中放置将来的串号信息
       },
       handleSerial(props){
-        let record = props.getValue()
+
+        // alert(rs.skuId)
+        let ds = this.bizPurchaseInDetailTable.dataSource
+        let record = ds.find(item => {
+          return item.id == props.rowId;
+        });
+        if (null == record ||  undefined == record){
+          ds.push(props.getValue())
+          record = props.getValue()
+        }
+
         let skuInfoUrl =  "/sku/sysSku/queryById"
         let params = {};//查询条件
         params.id = record.skuId;
@@ -450,28 +472,24 @@
           }
         })
         that.parentSku.skuId = record.skuId
-        if (record.listBizFlowSerial == null || undefined == record.listBizFlowSerial )
-        {
-          Object.assign(record, {listBizFlowSerial:[]});
-        }
-        //动态添加属性
-        if (record.listBizFlowSerial == null || undefined == record.listBizFlowSerial )
-        {
-          that.dataSource = record.listBizFlowSerial   //没有 jiran baocunle ,zai load yici
-        }else {
-          Object.assign(record, {listBizFlowSerial:[]});  //添加属性
+
+        if (record.listBizFlowSerial == null && undefined == record.listBizFlowSerial) {
+          Object.assign(record, {listBizFlowSerial: []});  //添加属性
+          that.dataSource = record.listBizFlowSerial
+        } else {
           that.dataSource = record.listBizFlowSerial
         }
+        that.parentRowProps = props
         that.title = "串号信息" ;
         that.visible = true;
       },
 
       /**
+       *
        * @serialRecords : 串号记录
        *  @selectRowId：到串号组件时的行id,再回传回来进行相应的判断
        * */
       getBizSerialModalInfo(serialRecords,selectRowId){
-
         let that = this.bizPurchaseInDetailTable.dataSource
         let record = that.find(item => {
          return item.id == selectRowId;
@@ -480,37 +498,22 @@
         serial.listBizFlowSerial = serialRecords
         Object.assign(record, serial);  //添加属性
 
-
-
-
-
-
-
-        /*
-        alert(record.listBizFlowSerial.length)
-        for(let k = 0 ; k <that.length ; k++ ){
-          that[k].qty = that[k].qty * 2
-        }
-*/
-        // let serial = {listBizFlowSerial:[]}
-        // serial.listBizFlowSerial = serialRecords
-        // Object.assign(record, serial);  //添加属性
       },
+      //串号组件中调用
+      setCurrentRowQty(props,ttlQty){
+        let { rowId, target } = props
+        let values=[]
+        //特别注意，inputValues和dataSources是分离的
+        target.inputValues.forEach((item, index) => {
+          if (props.index == index){
+             item.qty = ttlQty
+          }
+          values.push(item)
+        })
+        this.$refs.bizPurchaseInDetail.setValues(values)
+      }
 
     }
   }
-
-/*
-  function enterCallback(e) {
-    if (e.keyCode === 13) {
-      let activeEl = document.activeElement;
-      let nextEl = activeEl.nextElementSibling;
-      nextEl && nextEl.focus();
-    }
-  }
-  window.addEventListener("keydown", enterCallback);
-
- */
-
 </script>
 
