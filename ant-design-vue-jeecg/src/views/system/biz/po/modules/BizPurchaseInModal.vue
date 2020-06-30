@@ -309,14 +309,7 @@
 
     methods: {
       //当单元格事件发生变化 时,补充校验规则
-      addAfter()
-      {
-        //  //this.add()
-        // this.eachAllTable((item) => {
-        //   item.add(1)
-        // })
 
-      },
 
 
 
@@ -389,6 +382,7 @@
           });
           if (null != record && undefined != record){
             //整理串号id为干净的id
+
             let serials = record.listBizFlowSerial
             if( null != serials && undefined != serials  ){
               for (let j = 0 ; j <serials.length ;j++){
@@ -430,7 +424,7 @@
         })
         this.$refs.bizPurchaseInDetail.setValues(values)
 
-
+        // target.removeRows(rowId)  //暂时保留 不要删除 ，此方法中放置将来的串号信息
         //let { rowId, target } = props
         //target.removeRows(props.rowId) // 删除时注意放开
         //target.dataSource[0].qty = 10000
@@ -451,7 +445,6 @@
       },
       handleSerial(props){
 
-        // alert(rs.skuId)
         let ds = this.bizPurchaseInDetailTable.dataSource
         let record = ds.find(item => {
           return item.id == props.rowId;
@@ -460,7 +453,10 @@
           ds.push(props.getValue())
           record = props.getValue()
         }
-
+        if (record.skuId == null || record.skuId == undefined) {
+          this.$message.error("请选择商品名称")
+          return
+        }
         let skuInfoUrl =  "/sku/sysSku/queryById"
         let params = {};//查询条件
         params.id = record.skuId;
@@ -492,11 +488,18 @@
       getBizSerialModalInfo(serialRecords,selectRowId){
         let that = this.bizPurchaseInDetailTable.dataSource
         let record = that.find(item => {
+
          return item.id == selectRowId;
         });
         let serial = {listBizFlowSerial:[]}
         serial.listBizFlowSerial = serialRecords
-        Object.assign(record, serial);  //添加属性
+        if (record == null || undefined == record){
+
+        }else
+        {
+          Object.assign(record, serial);  //添加属性
+        }
+
 
       },
       //串号组件中调用

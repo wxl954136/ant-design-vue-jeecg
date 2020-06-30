@@ -203,9 +203,8 @@
           {
             title:'串号',
             align:"left",
-            key:'serial1',
-            dataIndex: 'serial1',
-
+            key:'serial',
+            dataIndex: 'serial',
             customRender: function (text) {
               if (text == null || text == "" || text == undefined ) {
                 return text
@@ -229,7 +228,7 @@
               customRender: 'customRender',
             },
             onFilter: (value, record) =>
-              record.serial1
+              record.serial
                 .toString()
                 .toLowerCase()
                 .includes(value.toLowerCase()),
@@ -241,23 +240,7 @@
               }
             },
           },
-          /*
-          {
-            title:'串号(2)',
-            align:"left",
-            width:100,
-            key:'serial2',
-            dataIndex: 'serial2'
-          },
-          {
-            title:'串号(3)',
-            align:"left",
-            key:'serial3',
-            width:100,
-            dataIndex: 'serial3'
-          },
 
-           */
           {
             title: '操作',
             dataIndex: 'action',
@@ -327,14 +310,15 @@
           return
         }
         if (inputSerials.length == 1) {
-          serial.serial1 = inputSerials[0]
+          serial.serial = inputSerials[0]
         }
         if (inputSerials.length == 2) {
-          serial.serial1 = inputSerials[0] + "," + inputSerials[1]
+          serial.serial = inputSerials[0] + "," + inputSerials[1]
         }
         if (inputSerials.length == 3) {
-          serial.serial1 = inputSerials[0] + "," + inputSerials[1] + "," + inputSerials[2]
+          serial.serial = inputSerials[0] + "," + inputSerials[1] + "," + inputSerials[2]
         }
+
         serial.headId =  this.parentSku.selectRowId
         serial.id = this.generateId()
         serial.skuId =  this.parentSku.skuId
@@ -373,7 +357,7 @@
         this.visible = false;
       },
       onConfirm() {
-        //传给父组件执行AccSettleModal
+
         if (this.getBizSerialModalInfo) {
           this.getBizSerialModalInfo(this.dataSource,this.parentSku.selectRowId );
         }
