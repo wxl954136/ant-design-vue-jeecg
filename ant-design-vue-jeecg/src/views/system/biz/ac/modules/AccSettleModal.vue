@@ -275,26 +275,7 @@
         settleButton.$el.innerHTML = settleButtonHtml
 
       },
-      wxlTest()
-      {
-        this.changeSettleButtonContent()
-        //放在JEditableTable中
-        //获取子组件中的子组件
 
-
-         // settlButton.$el.value = "测试一下"
-
-
-
-        // let that = this.$refs.accSettleDetail
-        // that.add()
-        // let rows = that.rows
-        // let row = rows[rows.length - 1]
-        // let record = Object.assign({}, row)
-        // this.accSettleDetailTable.dataSource.push(record)
-        // record.memo = "可以不"
-        // record.payableBizNo = "JFC"
-      },
       importPayableRecordToTable(value)
       {
         let that = this.$refs.accSettleDetail

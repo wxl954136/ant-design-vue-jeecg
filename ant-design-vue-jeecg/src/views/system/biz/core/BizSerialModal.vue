@@ -179,6 +179,7 @@
           selectRowId:"",  //
           skuId:"",
           skuFullName:"",
+          costFlag:"",
           skuQty:0,
         },
         caseId: `_jet-${randomString(6)}-`,
@@ -263,6 +264,7 @@
       //alert(routePath)
     },
     methods: {
+
       getListUrl(url){
         let baseRoute= url
         //这个$root.path取的是进来时的列表路由地址，即list

@@ -1039,7 +1039,6 @@
                   })
                 }
                 if (column.dictCode) {
-                  console.log("这里是加载值 悠蓝:youlan  -----------------" )
                   this._loadDictConcatToOptions(column)
                 }
               }
@@ -1047,6 +1046,7 @@
           })
         }
       },
+
       // 当selectRowIds改变时触发事件
       selectedRowIds(newValue) {
         this.$emit('selectRowChange', cloneObject(newValue).map(i => this.getCleanId(i)))
@@ -1398,14 +1398,12 @@
       },
       /** 添加一行 */
       add(num = 1, forceScrollToBottom = false) {
-
         if (num < 1) return
-
         // let timestamp = new Date().getTime()
         let rows = this.rows
-
         let row
         for (let i = 0; i < num; i++) {
+
           rows = this.push({}, false, rows)
           row = rows[rows.length - 1]
         }
@@ -1420,6 +1418,7 @@
           row: (() => {
             let r = Object.assign({}, row)
             r.id = this.getCleanId(r.id)
+            r.opt = "INS"
             return r
           })(),
           target: this
@@ -2300,6 +2299,7 @@
         this.elemValueChange(FormTypes.slot, row, column, value)
       },
       handleBlurCommono(target, index, row, column) {
+
         let { value, dataset } = target
         if (dataset && `${dataset.inputNumber}` === 'true') {
           // 判断输入的值是否匹配数字正则表达式，不匹配就置空
@@ -2480,6 +2480,9 @@
         }
       },
 
+      wxl(){
+        alert("x1======")
+      },
       /** 加载数据字典并合并到 options */
       _loadDictConcatToOptions(column) {
         initDictOptions(column.dictCode).then((res) => {
@@ -2638,7 +2641,7 @@
         }
         //注意在column表格中定义时加disabledEdit:true即可，参照 JEditableTable
         if (col.disabledEdit ){
-          if (row.id.indexOf("_tid-") >=0  ) //新增的id有此特性
+          if (row.id.indexOf("_tid-") >=0 || row.id.indexOf("new:") >= 0) //新增的id有此特性
             props['disabled'] = false
           else
             props['disabled'] = true
@@ -2758,8 +2761,8 @@
             }
           }
         }
-       // let iz_cn = select_drop_text.indexOf(input.toLowerCase().trim()) >= 0
-       // let iz_pinyin = select_drop_pinyin.indexOf(input.toLowerCase().trim()) >=0
+        // let iz_cn = select_drop_text.indexOf(input.toLowerCase().trim()) >= 0
+        // let iz_pinyin = select_drop_pinyin.indexOf(input.toLowerCase().trim()) >=0
         return (  iz_cn || iz_pinyin);
 
 

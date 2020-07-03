@@ -29,36 +29,36 @@
           <a-col :xs="24" :sm="12">
             <!-- 做一个字段隐藏思路,这样弱关联,popupCallback注意添加辅助字段traderName,怎么模糊查询 -->
             <a-form-item label="供应商" :labelCol="labelCol" :wrapperCol="wrapperCol">
-               <y-search-trader-select-tag v-decorator="['traderId', validatorRules.traderId]"
-                                           :disabled="optionType?false:true"  />
-               <!--
-              <a-select v-decorator="['traderId', validatorRules.traderId]"
-                        show-search
-                        placeholder="选择供应商"
-                        option-filter-prop="children"
-                        :filter-option="filterOption"
-                        allowClear>
-                <a-select-option v-for="data in traderDataList" :key="data.id"
-                                 :disabled="data.enableFlag?false:true">{{data.name}}
-                </a-select-option>
-              </a-select>
-              -->
+              <y-search-trader-select-tag v-decorator="['traderId', validatorRules.traderId]"
+                                          :disabled="optionType?false:true"  />
+              <!--
+             <a-select v-decorator="['traderId', validatorRules.traderId]"
+                       show-search
+                       placeholder="选择供应商"
+                       option-filter-prop="children"
+                       :filter-option="filterOption"
+                       allowClear>
+               <a-select-option v-for="data in traderDataList" :key="data.id"
+                                :disabled="data.enableFlag?false:true">{{data.name}}
+               </a-select-option>
+             </a-select>
+             -->
 
-            <!--
-                <j-search-select-tag v-decorator="['traderId', validatorRules.traderId]"
-                :dict="traderInfo"   />
+              <!--
+                  <j-search-select-tag v-decorator="['traderId', validatorRules.traderId]"
+                  :dict="traderInfo"   />
 
 
-              模糊查询怎么搞  youlan
-              <a-input v-show="true" v-decorator="['traderId']" placeholder="这里是往来单位信息[隐藏]"></a-input>
-              <j-popup
-                v-decorator="['traderName', validatorRules.traderName]"
-                :trigger-change="true"
-                org-fields="id,name"
-                dest-fields="traderId,traderName"
-                code="rpt_sys_trader_info"
-                @callback="popupCallback"/>
-                -->
+                模糊查询怎么搞  youlan
+                <a-input v-show="true" v-decorator="['traderId']" placeholder="这里是往来单位信息[隐藏]"></a-input>
+                <j-popup
+                  v-decorator="['traderName', validatorRules.traderName]"
+                  :trigger-change="true"
+                  org-fields="id,name"
+                  dest-fields="traderId,traderName"
+                  code="rpt_sys_trader_info"
+                  @callback="popupCallback"/>
+                  -->
             </a-form-item>
           </a-col>
           <a-col :xs="24" :sm="12">
@@ -80,7 +80,7 @@
           </a-col>
           <a-col :xs="24" :sm="12">
             <a-form-item label="经手人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input  v-yenter-to-next = "true"  v-decorator="['handler']" placeholder="请输入经手人"></a-input>
+              <a-input    v-decorator="['handler']" placeholder="请输入经手人"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xs="24" :sm="12">
@@ -95,8 +95,9 @@
       <!-- 子表单区域 -->
       <a-tabs v-model="activeKey" @change="handleChangeTabs">
         <a-tab-pane :tab="detailTitle" :key="refKeys[0]" :forceRender="true" >
+          <!--              :customRow="rowClick"   -->
+
           <j-editable-table
-            :customRow="rowClick"
             :ref="refKeys[0]"
             :loading="bizPurchaseInDetailTable.loading"
             :columns="bizPurchaseInDetailTable.columns"
@@ -114,7 +115,7 @@
             </span>
           </j-editable-table>
         </a-tab-pane>
-        
+
       </a-tabs>
 
     </a-spin>
@@ -218,6 +219,7 @@
         // 采购入库明细表
         bizPurchaseInDetailTable: {
           loading: false,
+
           dataSource: [],
           columns: [
             {
@@ -232,7 +234,7 @@
               validateRules: [
                 { required: true, message: '${title}不能为空' },
                 { handler: this.validateSkuHandler }
-                ]
+              ]
             },
             {
               title: '数量',
@@ -305,17 +307,41 @@
       let title = this.getBizType()
       if (title == "CGRK") this.detailTitle = "采购入库明细"
       else if (title == "CGTH") this.detailTitle = "采购退货明细"
+      // this.addDefaultRowNum = 0
+
     },
 
     methods: {
+
       //当单元格事件发生变化 时,补充校验规则
+      addAfter() {
+
+        this.getAllTable().then(tables => {
+            tables.forEach((target, index1) => {
+              // target.handleClickAdd() 再加一行数据
+              if (index1 == 0){
+                    target.inputValues.forEach((item, index) => {
+                       // target.selectedRowIds.push(item.id)
+                       item.qty = 1
+                       item.opt = "INS"
+                    })
+                //     this.$nextTick(() => {
+                //       this.updateFormValues()
+                //     })
+                // let column = target.columns[2]
+                // target._loadDictConcatToOptions(column)
+                // console.info("1============")
+                // console.info(target)
+
+              }
+            })
+
+        })
 
 
-
-
+      },
 
       validateSkuHandler(type, value, row, column, callback, target) {
-
         let {values} = target.getValuesSync({validate: false})  //获得明细行事行数据,未显示字段无法获取
         let count = 0
         for (let val of values) {
@@ -351,9 +377,7 @@
         let values = this.tableKeys.map(key => getRefPromise(this, key))
         return Promise.all(values)
       },
-      addBefore(){
-         // alert("x这个问题目前未找到答案，就新增时，第一次没有加载商品型")
-      },
+
       /** 调用完edit()方法之后会自动调用此方法 */
       editAfter() {
         console.log("JEditableTableMixin.js，即新增按钮后，会调用此方法")
@@ -397,33 +421,35 @@
         return {
           ...main, // 展开
           bizPurchaseInDetailList: detail,
-         // bizPurchaseInDetailList: allValues.tablesValue[0].values,
+          // bizPurchaseInDetailList: allValues.tablesValue[0].values,
 
         }
       },
       validateError(msg){
         this.$message.error(msg)
       },
-     popupCallback(row){
-       this.form.setFieldsValue(pick(row,'bizNo','bizDate','traderId','storeId','tradeMethod','handler','memo'))
-     },
+      popupCallback(row){
+        this.form.setFieldsValue(pick(row,'bizNo','bizDate','traderId','storeId','tradeMethod','handler','memo'))
+      },
       getFormFieldValue(field){
         return this.form.getFieldValue(field)
       },
       handleDelete(props) {
         let { rowId, target } = props
+        target.removeRows(rowId)
+        /*
         let values=[]
         //特别注意，inputValues和dataSources是分离的
         target.inputValues.forEach((item, index) => {
           if (props.index == index){
-             item.qty = 88
-             item.memo = "input再不显示，我要疯了---"
+            //item.qty = 88
+            //item.memo = "input再不显示，我要疯了---"
             // alert(item.listBizFlowSerial.length)
           }
           values.push(item)
         })
         this.$refs.bizPurchaseInDetail.setValues(values)
-
+*/
         // target.removeRows(rowId)  //暂时保留 不要删除 ，此方法中放置将来的串号信息
         //let { rowId, target } = props
         //target.removeRows(props.rowId) // 删除时注意放开
@@ -441,7 +467,7 @@
         //                  例：target.add()
         // 使用实例：删除当前操作的行
         // let { rowId, target } = props
-        //target.removeRows(rowId)  //暂时保留 不要删除 ，此方法中放置将来的串号信息
+        // target.removeRows(rowId)  //暂时保留 不要删除 ，此方法中放置将来的串号信息
       },
       handleSerial(props){
 
@@ -449,23 +475,25 @@
         let record = ds.find(item => {
           return item.id == props.rowId;
         });
-        if (null == record ||  undefined == record){
-          ds.push(props.getValue())
-          record = props.getValue()
-        }
-        if (record.skuId == null || record.skuId == undefined) {
+        record = props.getValue()
+        if (record.skuId == null ||record.skuId.trim().length <=0 || record.skuId == undefined) {
           this.$message.error("请选择商品名称")
           return
         }
+        if (null == record ||  undefined == record){
+          ds.push(props.getValue())
+        }
+
+
         let skuInfoUrl =  "/sku/sysSku/queryById"
-        let params = {};//查询条件
-        params.id = record.skuId;
-        let  that  = this.$refs.getBizSerialModalInfoForm
-        that.parentSku.selectRowId = record.id
-        getAction(skuInfoUrl, params).then((res) => {
-          if (res.success && res.result) {
-            that.parentSku.skuFullName = res.result.fullName
-          }
+            let params = {};//查询条件
+            params.id = record.skuId;
+            let  that  = this.$refs.getBizSerialModalInfoForm
+            that.parentSku.selectRowId = record.id
+            getAction(skuInfoUrl, params).then((res) => {
+              if (res.success && res.result) {
+                that.parentSku.skuFullName = res.result.fullName
+              }
         })
         that.parentSku.skuId = record.skuId
 
@@ -489,7 +517,7 @@
         let that = this.bizPurchaseInDetailTable.dataSource
         let record = that.find(item => {
 
-         return item.id == selectRowId;
+          return item.id == selectRowId;
         });
         let serial = {listBizFlowSerial:[]}
         serial.listBizFlowSerial = serialRecords
@@ -509,7 +537,7 @@
         //特别注意，inputValues和dataSources是分离的
         target.inputValues.forEach((item, index) => {
           if (props.index == index){
-             item.qty = ttlQty
+            item.qty = ttlQty
           }
           values.push(item)
         })

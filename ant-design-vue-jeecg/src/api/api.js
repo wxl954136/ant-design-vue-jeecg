@@ -66,6 +66,9 @@ const editDictItem = (params)=>putAction("/sys/dictItem/edit",params);
 
 //字典标签专用（通过code获取字典数组）
 export const ajaxGetDictItems = (code, params)=>getAction(`/sys/dict/getDictItems/${code}`,params);
+
+export const ajaxGetSkuItems = (params)=>getAction(`/sku/sysSku/queryById`,params);
+
 //从缓存中获取字典配置
 function getDictItemsFromCache(dictCode) {
   if (Vue.ls.get(UI_CACHE_DB_DICT_DATA) && Vue.ls.get(UI_CACHE_DB_DICT_DATA)[dictCode]) {
