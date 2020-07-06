@@ -152,11 +152,10 @@
   // 引入搜索部门弹出框的组件
   import departWindow from './DepartWindow'
   import JSelectPosition from '@/components/jeecgbiz/JSelectPosition'
-  import { ACCESS_TOKEN } from "@/store/mutation-types"
-  import { getAction } from '@/api/manage'
-  import {addUser,editUser,queryUserRole,queryall } from '@/api/api'
-  import { disabledAuthFilter } from "@/utils/authFilter"
-  import {duplicateCheck } from '@/api/api'
+  import {ACCESS_TOKEN} from "@/store/mutation-types"
+  import {getAction} from '@/api/manage'
+  import {addUser, duplicateCheck, editUser, queryall, queryUserRole} from '@/api/api'
+  import {disabledAuthFilter} from "@/utils/authFilter"
   import JImageUpload from '../../../components/jeecg/JImageUpload'
 
   export default {
@@ -522,20 +521,20 @@
         }
       },
       validateUsername(rule, value, callback){
-        var params = {
+        let params = {
           tableName: 'sys_user',
           fieldName: 'usersign',
           fieldVal: value,
-          fieldGsdm:'gsdm',
+          fieldGsdm: 'gsdm',
           dataId: this.userId
         };
         duplicateCheck(params).then((res) => {
           if (res.success) {
-          callback()
-        } else {
-          callback("用户名已存在!")
-        }
-      })
+            callback()
+          } else {
+            callback("用户名已存在!")
+          }
+        })
       },
 
 

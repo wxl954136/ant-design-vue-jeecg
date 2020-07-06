@@ -126,6 +126,7 @@
           xs: { span: 24 },
           sm: { span: 20 },
         },
+        detailTitle:"",
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
@@ -232,7 +233,7 @@
         }
       }
     },
-    mounted(){
+    created(){
       //这里做初始加载，改为插件模式
       //this.getTraderList()
       let title = this.getBizType()

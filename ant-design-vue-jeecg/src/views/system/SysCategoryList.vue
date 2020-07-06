@@ -225,7 +225,6 @@
           this.loadData()
         }else{
           this.expandedRowKeys=[]
-          console.log("22222",arr)
           for(let i of arr){
             await this.expandTreeNode(i)
           }

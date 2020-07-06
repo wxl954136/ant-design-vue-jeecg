@@ -66,8 +66,12 @@ const editDictItem = (params)=>putAction("/sys/dictItem/edit",params);
 
 //字典标签专用（通过code获取字典数组）
 export const ajaxGetDictItems = (code, params)=>getAction(`/sys/dict/getDictItems/${code}`,params);
-
+//youlan自定义根据id获取sku
 export const ajaxGetSkuItems = (params)=>getAction(`/sku/sysSku/queryById`,params);
+//youlan自定义获取重复记录数
+export const ajaxGetCheckCountSql = (params)=>getAction(`/sys/base/getCheckCountSql`,params);
+//youlan自定义 -- 后台根据用户id获取当前可操作的仓库
+export const ajaxGetStoresByUserId = (params)=>getAction(`/store/sysStore/queryStoresByUserId`,params);
 
 //从缓存中获取字典配置
 function getDictItemsFromCache(dictCode) {

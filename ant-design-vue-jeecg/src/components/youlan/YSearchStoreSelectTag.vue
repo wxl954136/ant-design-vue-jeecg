@@ -19,15 +19,16 @@
 </template>
 
 <script>
-  import { ajaxGetDictItems,getDictItemsFromCache } from '@/api/api'
+  import {ajaxGetStoresByUserId} from '@/api/api'
   import debounce from 'lodash/debounce';
-  import { getAction } from '../../api/manage'
+  import {getAction} from '../../api/manage'
   //支持转换为拼音
   import pinyin from '@/components/_util/pinyin.js'
+
   const mapPinyinOfTrader = new Map()
 
   export default {
-    name: 'YSearchTraderSelectTag',
+    name: 'YSearchStoreSelectTag',
     props:{
       disabled: Boolean,
       value: [String, Number],
@@ -75,20 +76,30 @@
     },
     methods:{
       initSelectValue(){
-        // this.async  =  true;  //始终实时查询
         if(this.async){
           if(!this.selectedAsyncValue || !this.selectedAsyncValue.key || this.selectedAsyncValue.key!=this.value){
             console.log("这才请求后台")
-            getAction(`/trader/sysTrader/queryById`,{id:this.value}).then(res=>{
-              if(res.success){
+            ajaxGetStoresByUserId(null).then((res) => {
+              if (res.success) {
                 let obj = {
-                  key:this.value,
-                  label:res.result  //辅助字段，暂未用，按照模板来
+                  key: this.value,
+                  label: res.result  //辅助字段，暂未用，按照模板来
                 }
                 this.selectedAsyncValue = {...obj}
                 this.selectedValue = this.value
               }
             })
+
+            // getAction(`/store/sysStore/queryStoresByUserId`,null).then(res=>{
+            //   if(res.success){
+            //     let obj = {
+            //       key:this.value,
+            //       label:res.result  //辅助字段，暂未用，按照模板来
+            //     }
+            //     this.selectedAsyncValue = {...obj}
+            //     this.selectedValue = this.value
+            //   }
+            // })
           }
         }
       },
@@ -98,18 +109,33 @@
         const currentLoad = this.lastLoad
         this.options = []
         this.loading=true
-        getAction(`/trader/sysTrader/querySysTraderList`,{}).then(res=>{
+        ajaxGetStoresByUserId(null).then((res) => {
           this.loading=false
           if(res.success){
             if(currentLoad!=this.lastLoad){
               return
             }
             this.options = res.result
-            console.log("我是第一个",res)
+
           }else{
             this.$message.warning(res.message)
           }
         })
+        /*
+        getAction(`/store/sysStore/queryStoresByUserId`,{}).then(res=>{
+          this.loading=false
+          if(res.success){
+            if(currentLoad!=this.lastLoad){
+              return
+            }
+            this.options = res.result
+
+          }else{
+            this.$message.warning(res.message)
+          }
+        })
+
+         */
 
       },
       initData(){
@@ -118,7 +144,8 @@
         this.options = []
         this.loading=true
         //初始化的时候请求数据，必须加条件，因为需要值
-        getAction(`/trader/sysTrader/querySysTraderList`,{id:this.value}).then(res=>{
+
+        ajaxGetStoresByUserId(null).then((res) => {
           this.loading=false
           if(res.success){
             if(currentLoad!=this.lastLoad){
@@ -129,6 +156,23 @@
             this.$message.warning(res.message)
           }
         })
+
+
+
+        /*
+        getAction(`/store/sysStore/queryStoresByUserId`,null).then(res=>{
+          this.loading=false
+          if(res.success){
+            if(currentLoad!=this.lastLoad){
+              return
+            }
+            this.options = res.result
+          }else{
+            this.$message.warning(res.message)
+          }
+        })
+
+         */
       },
       /*
       initDictData(){

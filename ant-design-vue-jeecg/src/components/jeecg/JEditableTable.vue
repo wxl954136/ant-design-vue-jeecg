@@ -1418,7 +1418,6 @@
           row: (() => {
             let r = Object.assign({}, row)
             r.id = this.getCleanId(r.id)
-            r.opt = "INS"
             return r
           })(),
           target: this
@@ -2480,9 +2479,7 @@
         }
       },
 
-      wxl(){
-        alert("x1======")
-      },
+
       /** 加载数据字典并合并到 options */
       _loadDictConcatToOptions(column) {
         initDictOptions(column.dictCode).then((res) => {
@@ -2641,10 +2638,14 @@
         }
         //注意在column表格中定义时加disabledEdit:true即可，参照 JEditableTable
         if (col.disabledEdit ){
-          if (row.id.indexOf("_tid-") >=0 || row.id.indexOf("new:") >= 0) //新增的id有此特性
+          if (row.id.indexOf("_tid-") >=0 || row.id.indexOf("new:") >= 0)
+          {
             props['disabled'] = false
+          }
           else
+          {
             props['disabled'] = true
+          }
         }
         return props
       },

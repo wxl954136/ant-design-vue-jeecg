@@ -13,7 +13,7 @@
         <a-row style="width: 100%;">
           <a-col :span="24/2">
             <a-form-item label="商品编码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['code']" placeholder="请输入商品编码"></a-input>
+              <a-input v-decorator="['code',validatorRules.code]" placeholder="请输入商品编码" @blur="handleCodeBlur"></a-input>
             </a-form-item>
           </a-col>
           <a-col :span="24/2">
@@ -96,6 +96,7 @@
 
   import { httpAction } from '@/api/manage'
   import pick from 'lodash.pick'
+  import {duplicateCheck,ajaxGetCheckCountSql} from '@/api/api'
   import { validateDuplicateValue } from '@/utils/util'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JCategorySelect from '@/components/jeecg/JCategorySelect'
@@ -134,6 +135,14 @@
         },
         confirmLoading: false,
         validatorRules: {
+          code: {
+            rules: [
+              { required: false, message: '请输入品牌!'},
+              {
+                validator: this.validateCode,
+              },
+            ]
+          },
           brand: {
             rules: [
               { required: true, message: '请输入品牌!'},
@@ -267,10 +276,59 @@
       popupCallback(row){
         this.form.setFieldsValue(pick(row,'code','brand','name','color','fullName','classifyId','stockAge','costFlag','virFlag','enableFlag','skuSort'))
       },
+      async handleCodeBlur(e){
+        let id = this.model.id
+        let code = e.target.value
+        if (null == code || undefined == code || code.trim().length == 0 ) return
+        let params = {}
+        params.dataId = id
+        params.tableName = "sys_sku"
+        params.fieldName = "code"
+        params.fieldVal = code
+
+        let nums = 0
+        await ajaxGetCheckCountSql(params).then((res) => {
+          if(res.success){
+            nums =  res.result
+          }else{
+            this.$message.warning(res.message)
+          }
+        })
+        if (nums >=1) {
+          this.$message.warning("该商品编码已经使用")
+          this.form.setFieldsValue({
+            'code': "",
+          });
+        }
+
+      },
+
       handleCategoryChange(value,backObj){
         this.form.setFieldsValue(backObj)
-      }
+      },
+      /*
+       validateCode(rule, value, callback){
 
+         if (value.trim().length == 0 ) return
+
+         let params = {
+           tableName: 'sys_sku',
+           fieldName: 'code',
+           fieldVal: value,
+           fieldGsdm: 'gsdm',
+           dataId: this.userId
+         };
+         duplicateCheck(params).then((res) => {
+           if (res.success) {
+             callback()
+           } else {
+             callback("用户名已存在!")
+           }
+         })
+
+
+      },
+  */
       
     }
   }

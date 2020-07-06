@@ -49,7 +49,6 @@ export const JEditableTableMixin = {
 
     /** 当点击新增按钮时调用此方法 */
     add() {
-      //默认走的是这个,自动新增的按钮
       if (typeof this.addBefore === 'function') this.addBefore()
       // 默认新增空数据
       let rowNum = this.addDefaultRowNum
@@ -58,7 +57,7 @@ export const JEditableTableMixin = {
         console.warn('由于你没有在 data 中定义 addDefaultRowNum 或 addDefaultRowNum 不是数字，所以默认添加一条空数据，如果不想默认添加空数据，请将定义 addDefaultRowNum 为 0')
       }
       this.eachAllTable((item) => {
-        //youlan 一定要延迟加载，否则第一行数据时select数据无法加载，重点关注
+        //悠蓝科技：一定要延迟加载，否则第一行数据时select数据无法加载，重点关注
         setTimeout(function(){
           item.add(rowNum)
         }, 400)
@@ -80,12 +79,16 @@ export const JEditableTableMixin = {
       if (typeof this.editAfter === 'function') this.editAfter(this.model)
 
     },
+    closeSelf(){
+      //处理自己的事件
+    },
     /** 关闭弹窗，并将所有JEditableTable实例回归到初始状态 */
     close() {
       this.visible = false
       this.eachAllTable((item) => {
         item.initialize()
       })
+      this.closeSelf()
       this.$emit('close')
     },
 

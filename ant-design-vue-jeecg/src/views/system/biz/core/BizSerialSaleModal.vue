@@ -52,14 +52,7 @@
           <a style="margin-left: 24px" @click="onClearSelected">清空</a>
         </div>
         <div style = "padding-bottom: 5px;padding-top: 0px;margin-top: -8px;">
-        <a-input-group compact>
-          <a-select ref = "selectSerialNum" default-value="1" @change="handleSelectSerialChange">
-            <a-select-option value="1">  一串号  </a-select-option>
-            <a-select-option value="2">  两串号 </a-select-option>
-            <a-select-option value="3"> 三串号 </a-select-option>
-          </a-select>
-          <a-input style="width: 88%" v-model="inputSerial" @keyup.enter="handleAddSerial" />
-        </a-input-group>
+          <a-input style="width: 100%" v-model="inputSerial" @keyup.enter="handleAddSerial" />
         </div>
         <a-table
           ref="table"
@@ -144,7 +137,7 @@
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
 
   export default {
-    name: "BizSerialModal",
+    name: "BizSerialSaleModal",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
 
@@ -176,7 +169,6 @@
         },
         title:"biz-serial-modal",
         form: this.$form.createForm(this),
-        selectSerialNums:"1",
         searchText: '',
         searchInput: null,
         searchedColumn: '',
@@ -284,37 +276,17 @@
         id = id.replace(this.tempId,"")
         return id
       },
-      handleSelectSerialChange(value){
-        this.selectSerialNums = `${value}`
-      },
+
       handleAddSerial(){
 
         let serial = {}
+        serial.serial = "ssssss"
         let inputSerials = this.inputSerial.split(',')
         for(let index = 0 ; index < inputSerials.length; index++){
             if (inputSerials[index].length <5) {
               this.$message.error('串号长度必须在5位以上')
               return
             }
-        }
-        if (parseInt(this.selectSerialNums)== 2  && inputSerials.length == 1)
-        {
-          this.inputSerial =  this.inputSerial + ","
-          return
-        }
-        if (parseInt(this.selectSerialNums)== 3  && inputSerials.length < 3)
-        {
-          this.inputSerial =  this.inputSerial + ","
-          return
-        }
-        if (inputSerials.length == 1) {
-          serial.serial = inputSerials[0]
-        }
-        if (inputSerials.length == 2) {
-          serial.serial = inputSerials[0] + "," + inputSerials[1]
-        }
-        if (inputSerials.length == 3) {
-          serial.serial = inputSerials[0] + "," + inputSerials[1] + "," + inputSerials[2]
         }
 
         if (this.izSerialsRepeat) {

@@ -48,6 +48,7 @@ export const JeecgListMixin = {
       superQueryFlag:false,
       /* 高级查询条件 */
       superQueryParams: '',
+
       /** 高级查询拼接方式 */
       superQueryMatchType: 'and',
     }
